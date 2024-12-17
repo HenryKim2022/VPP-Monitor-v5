@@ -1185,6 +1185,7 @@ footer.footer-border {
   display : flex;
   align-items : center;
   margin-top : 1.35rem;
+  /* margin-top : 0.65rem; */
   font-size : inherit;
 }
 

@@ -15,8 +15,8 @@ class tb_JabatanSeeder extends Seeder
         $jabatanList = [
             ['IT Developer', 1],
             ['IT Engineer', 2],
-            ['Project Co', null],
-            ['Engineer', null],
+            ['General Manager', 26],
+            ['Engineer Manager', 8],
         ];
         foreach ($jabatanList as $jabatan) {
             $model = new Jabatan_Model();

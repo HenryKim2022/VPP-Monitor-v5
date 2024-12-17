@@ -45,7 +45,7 @@ class ProjectsController extends Controller
             $project = [];
             if ($authUserType === 'Client') {
                 $authIDClient = auth()->user()->id_client;
-                $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet', 'monitor' => function($query) {
+                $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet', 'monitor' => function ($query) {
                     $query->orderBy('order'); // Sort by the new order column in tb_monitoring
                 }])
                     ->where('id_client', $authIDClient)
@@ -55,7 +55,7 @@ class ProjectsController extends Controller
                     ->values();
             } else {
                 // $project = Projects_Model::with(['karyawan', 'client', 'team', 'worksheet', 'monitor'])
-                $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet', 'monitor' => function($query) {
+                $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet', 'monitor' => function ($query) {
                     $query->orderBy('order'); // Sort by the new order column in tb_monitoring
                 }])
                     ->withoutTrashed()
@@ -152,9 +152,9 @@ class ProjectsController extends Controller
             // If the project is soft-deleted, restore it then edit it
             if ($existingProject->trashed()) {
                 $doRestore = $this->restore_and_edit($existingProject, $request);
-                if ($doRestore){
+                if ($doRestore) {
                     Session::flash('success', ['Project restored successfully!']);
-                }else{
+                } else {
                     Session::flash('n_errors', ['Project restore failed!']);
                 }
                 return redirect()->back();
@@ -231,7 +231,8 @@ class ProjectsController extends Controller
     }
 
 
-    public function restore_and_edit($existingProject, $request){
+    public function restore_and_edit($existingProject, $request)
+    {
         $existingProject->restore();
 
         $prj = Projects_Model::find($request->input('project-id'));
@@ -902,12 +903,21 @@ class ProjectsController extends Controller
                 //     ->first();
 
 
-                $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet', 'monitor' => function($query) {
-                    $query->orderBy('order'); // Sort by the new order column in tb_monitoring
-                }])
-                ->where('id_project', $projectId)
-                ->withoutTrashed()
-                ->first();
+                // $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet', 'monitor' => function($query) {
+                //     $query->orderBy('order'); // Sort by the new order column in tb_monitoring
+                // }])
+                // ->where('id_project', $projectId)
+                // ->withoutTrashed()
+                // ->first();
+
+                $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet'])
+                    ->where('id_project', $projectId)
+                    ->withoutTrashed()
+                    ->first();
+
+                if ($project) {
+                    $project->setRelation('monitor', $project->monitor()->orderBy('order')->get());
+                }
 
                 $project->load('worksheet');
                 $ws_status = $project->worksheet->map(function ($worksheet) {

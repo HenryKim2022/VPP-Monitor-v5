@@ -6,7 +6,7 @@
 
 <!-- BEGIN: Main Menu-->
 <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
-    <div class="navbar-header">
+    <div class="navbar-header expanded">
         <ul class="nav navbar-nav flex-row">
             <li class="nav-item mr-auto"><a class="navbar-brand" href="{{ config('app.url') }}"><span class="brand-logo">
                         <!-- route('userPanels.dashboard') }} -->

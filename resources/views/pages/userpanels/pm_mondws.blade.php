@@ -771,12 +771,14 @@
                                                     $monUserId = $mon->karyawan->id_karyawan;
                                                 @endphp
 
-                                                <tr data-id="{{ $mon->id_monitoring }}">
+                                                <tr data-id="{{ $mon->id_monitoring }}" class="draggable-row">
                                                     @if ($authUserType === 'Superuser' || $isProjectOpen)
                                                         @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor')
                                                             @if ($authUserType === 'Superuser' || $isCoInPrj)
-                                                                <td class="{{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}cell-fit text-center align-middle">
-                                                                    <div class="dropdown {{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}d-lg-block d-sm-block d-md-block">
+                                                                <td
+                                                                    class="{{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}cell-fit text-center align-middle">
+                                                                    <div
+                                                                        class="dropdown {{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}d-lg-block d-sm-block d-md-block">
                                                                         <button
                                                                             class="btn btn-icon navbar-toggler p-0 d-inline-flex"
                                                                             type="button" id="tableActionDropdown"
@@ -817,7 +819,8 @@
                                                         @endif
                                                     @endif
 
-                                                    <td class="{{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}cell-fit text-center align-middle">
+                                                    <td
+                                                        class="{{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}cell-fit text-center align-middle">
                                                         {{ $no++ }}</td>
 
                                                     <td class="text-start align-middle txt-break text-wrap">
@@ -2049,53 +2052,96 @@
             </script>
 
 
+
+
             @if ($authUserType != 'Client' && $authUserType != 'Engineer')
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         var drake = dragula([document.getElementById('draggable-table')], {
                             moves: function(el, container, handle) {
-                                // Allow dragging from any element with the class 'dragable-handle'
                                 return handle.classList.contains('dragable-handle');
                             }
                         });
 
-                        drake.on('drop', function(el, target, source, sibling) {
-                            // Get the new order of the rows
+                        let selectedRow = null;
+                        // Select all rows and add event listeners to all handles
+                        const rows = document.querySelectorAll('#draggable-table tr');
+                        rows.forEach(row => {
+                            const handles = row.querySelectorAll('.dragable-handle'); // Select all handles in the row
+                            handles.forEach(handle => {
+                                // Add click event listener to each handle
+                                handle.addEventListener('click', function(e) {
+                                    handleRowClick(e, row);
+                                });
+
+                                // Add touchend event listener to each handle
+                                handle.addEventListener('touchend', function(e) {
+                                    e.preventDefault(); // Prevent default behavior
+                                    handleRowClick(e, row);
+                                });
+                            });
+                        });
+
+                        function handleRowClick(e, row) {
+                            console.log('Row clicked:', row);
+                            if (!selectedRow) {
+                                selectedRow = row;
+                                selectedRow.classList.add('selected4drag-start'); // Add the class when selecting
+                                console.log('Selected row to move:', selectedRow);
+                            } else {
+                                const targetRow = e.currentTarget.closest('tr');
+                                if (targetRow && targetRow !== selectedRow) {
+                                    const parent = selectedRow.parentNode;
+                                    parent.insertBefore(selectedRow, targetRow.nextSibling);
+                                    updateOrder();
+                                    console.log('Moved row after target:', targetRow);
+                                }
+                                selectedRow.classList.remove('selected4drag-start'); // Remove the start class
+                                selectedRow.classList.add(
+                                'selected4drag-end'); // Add a different class to indicate the end of selection
+                                selectedRow = null; // Reset selectedRow
+                            }
+                        }
+
+                        function updateOrder() {
                             var order = [];
                             var rows = document.querySelectorAll('#draggable-table tr');
                             rows.forEach(function(row, index) {
                                 order.push({
-                                    id: row.dataset
-                                        .id, // Assuming you have a data-id attribute for each row
-                                    order: index + 1 // New order (1-based index)
+                                    id: row.dataset.id,
+                                    order: index + 1
                                 });
                             });
-                            // Send the new order to the server
                             fetch('{{ route('m.mon.dws.uor') }}', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                                     },
                                     body: JSON.stringify(order)
                                 })
                                 .then(response => response.json())
                                 .then(data => {
-                                    if (data.message != null && data.message) {
-                                        jsonToastReceiver(data.message); // Display success message
+                                    if (data.message) {
+                                        jsonToastReceiver(data.message);
                                     }
                                     console.log('Order updated:', data);
                                 })
                                 .catch((error) => {
-                                    if (error.message != null && error.message) {
-                                        jsonToastReceiver(error.message); // Display error message
+                                    if (error.message) {
+                                        jsonToastReceiver(error.message);
                                     }
                                     console.error('Error:', error);
                                 });
+                        }
+
+                        drake.on('drop', function(el, target, source, sibling) {
+                            updateOrder();
                         });
                     });
                 </script>
             @endif
+
 
 
 

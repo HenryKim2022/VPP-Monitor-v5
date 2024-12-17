@@ -99,6 +99,35 @@
             $coUserId = $project->id_karyawan ?? null;
         @endphp
 
+
+        @php
+            // Team Check based-on id_karyawan
+            $auth_emp_id = auth()->user()->id_karyawan;
+            $prj_cos = [];
+            // dd($project['coordinators']->toarray());
+            foreach ($project['coordinators'] as $co) {
+                if (isset($co['karyawan'])) {
+                    $prj_cos[] = (int) $co['karyawan']['id_karyawan'];
+                }
+            }
+            $isCoInPrj = in_array($auth_emp_id, $prj_cos);
+        @endphp
+        @php
+            $team_emps = [];
+            // dd($project['prjteams']->toArray());
+            foreach ($project['prjteams'] as $prj_team) {
+                if (isset($prj_team['team']['karyawans'])) {
+                    foreach ($prj_team['team']['karyawans'] as $karyawan) {
+                        $team_emps[] = (int) $karyawan['id_karyawan'];
+                    }
+                }
+            }
+            // Check if the authenticated employee ID is in the team_emps array
+            $isEmployeeInTeam = in_array($auth_emp_id, $team_emps);
+        @endphp
+
+
+
         @php
             $isProjectOpen = $project->status_project == 'OPEN' ? true : false;
             $isWsStatusOpen = $loadDataWS->status_ws == 'OPEN' ? true : false;
@@ -338,10 +367,7 @@
                                         <!-- Add WS -->
                                         @if ($authUserType === 'Superuser' || $isProjectOpen)
                                             @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
-                                                @if (
-                                                    $authUserType === 'Superuser' ||
-                                                        $authUserId == $exeUserId ||
-                                                        ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                                @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                                     @if ($isWsStatusOpen)
                                                         <button onclick="openModal('{{ $modalData['modal_add'] }}')"
                                                             class="btn bg-success mx-1 d-inline-block rounded-1 d-flex justify-content-center align-items-center border border-success text-white add-new-record"
@@ -383,10 +409,7 @@
                                             @endif
                                         @else
                                             @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
-                                                @if (
-                                                    $authUserType === 'Superuser' ||
-                                                        $authUserId == $exeUserId ||
-                                                        ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                                @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                                     @if ($isWsStatusOpen)
                                                         <button
                                                             class="btn bg-danger mx-1 d-inline-block rounded-1 d-flex justify-content-center align-items-center border border-danger text-white"
@@ -440,10 +463,7 @@
                                         <!-- LOCK & UNLOCK -->
                                         @if ($authUserType === 'Superuser' || $isProjectOpen)
                                             @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
-                                                @if (
-                                                    $authUserType === 'Superuser' ||
-                                                        $authUserId == $exeUserId ||
-                                                        ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                                @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                                     @if ($isWsStatusOpen)
                                                         @if (isset($modalData['modal_lock']))
                                                             <button lock_ws_id_value = "{{ $loadDataWS->id_ws ?: 0 }}"
@@ -492,10 +512,7 @@
                                             @endif
                                         @else
                                             @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
-                                                @if (
-                                                    $authUserType === 'Superuser' ||
-                                                        $authUserId == $exeUserId ||
-                                                        ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                                @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                                     @if ($isWsStatusOpen)
                                                         @if (isset($modalData['modal_lock']))
                                                             <button lock_ws_id_value = "{{ $loadDataWS->id_ws ?: 0 }}"
@@ -751,10 +768,7 @@
                                     <th rowspan="2" class="txt-wrap text-center align-middle">Description</th>
 
 
-                                    @if (
-                                        $authUserType === 'Superuser' ||
-                                            $authUserId == $exeUserId ||
-                                            ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                    @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                         <th colspan="2" data-toggle="tooltip" data-popup="tooltip-custom"
                                             data-placement="bottom"
                                             data-original-title="Saved: {{ number_format($theadTotalActual, 1) }}% + Unsaved: {{ number_format($tbodyTotalActual, 1) }}%"
@@ -801,10 +815,7 @@
 
                                                         @if ($authUserType === 'Superuser' || $isProjectOpen)
                                                             @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
-                                                                @if (
-                                                                    $authUserType === 'Superuser' ||
-                                                                        $authUserId == $exeUserId ||
-                                                                        ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                                                @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                                                     <a class="edit-record dropdown-item d-flex align-items-center"
                                                                         edit_task_id_value = "{{ $relDWS->id_task ?: 0 }}"
                                                                         edit_project_id_value = "{{ $relDWS->id_project ?: 0 }}"
@@ -999,10 +1010,7 @@
                                 <tr>
                                     <td colspan="{{ $isWsStatusOpen ? '6' : '5' }}" class="px-1">
                                         <div class="d-flex justify-content-between">
-                                            @if (
-                                                $authUserType === 'Superuser' ||
-                                                    $authUserId == $exeUserId ||
-                                                    ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                            @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                                 <strong data-toggle="tooltip" data-popup="tooltip-custom"
                                                     data-placement="bottom"
                                                     data-original-title="Maximal remarks is 9-lines, 951-characters"
@@ -1016,10 +1024,7 @@
                                             @endif
 
                                             @if ($authUserType != 'Client')
-                                                @if (
-                                                    $authUserType === 'Superuser' ||
-                                                        $authUserId == $exeUserId ||
-                                                        ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                                @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                                     <strong id="charCount" data-toggle="tooltip"
                                                         data-popup="tooltip-custom" data-placement="bottom"
                                                         data-original-title="Note: Please be aware that your remarks will not be saved if they exceed 951 characters in length!"
@@ -1165,10 +1170,7 @@
 
                                 @if ($authUserType === 'Superuser' || $isProjectOpen)
                                     @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
-                                        @if (
-                                            $authUserType === 'Superuser' ||
-                                                $authUserId == $exeUserId ||
-                                                ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                        @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                             @if ($isWsStatusOpen)
                                                 <tr class="lock-ws-cmd cursor-pointer"
                                                     lock_ws_id_value="{{ $loadDataWS->id_ws ?: 0 }}"
@@ -1263,10 +1265,7 @@
                                     @endif
                                 @else
                                     @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
-                                        @if (
-                                            $authUserType === 'Superuser' ||
-                                                $authUserId == $exeUserId ||
-                                                ($isEmployeeInTeam && $authUserId == $exeUserId))
+                                        @if ($authUserType === 'Superuser' || $authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId))
                                             @if ($isWsStatusOpen)
                                                 <tr class="cursor-pointer"
                                                     lock_ws_id_value="{{ $loadDataWS->id_ws ?: 0 }}">
@@ -1412,7 +1411,7 @@
                     lengthMenu: 'Display _MENU_ records per page',
                     info: 'Showing page _PAGE_ of _PAGES_',
                     search: 'Search',
-                                        // paginate: {
+                    // paginate: {
                     //     first: 'First',
                     //     last: 'Last',
                     //     next: '&rarr;',
@@ -1433,7 +1432,7 @@
                     // $(this.api().column([3]).header()).addClass('cell-fit text-center align-middle');
                     // $(this.api().column([4]).header()).addClass('cell-fit text-center align-middle');
 
-                    var TaskTH_w = 28;
+                    var TaskTH_w = 30;
                     var DescbTH_w = TaskTH_w + 8;
                     // After setting the width, trigger a redraw
                     $('#daftarTaskTable th:contains("Act")').css('width', '2%');
@@ -1781,9 +1780,7 @@
 
     @if ($authUserType === 'Superuser' || $isWsStatusOpen)
         @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
-            @if (
-                $authUserType === 'Superuser' ||
-                    ($authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId)))
+            @if ($authUserType === 'Superuser' || ($authUserId == $exeUserId || ($isEmployeeInTeam && $authUserId == $exeUserId)))
                 <script>
                     $(document).ready(function() {
                         // Function to handle AJAX request
