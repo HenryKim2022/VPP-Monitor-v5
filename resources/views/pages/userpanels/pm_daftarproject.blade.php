@@ -321,8 +321,12 @@
                                                                 ) {
                                                                     $meRef = '';
                                                                 }
+                                                                if ($authUserType === 'Superuser' || $authUserType === 'Supervisor') {
+                                                                    $border1Ref = 'border-right: 2px solid #7367f0 !important';
+                                                                }
                                                             @endphp
-                                                            <div class="{{ $meRef }} w-100">
+
+                                                            <div class="{{ $meRef }} w-100" style="{{ $border1Ref }}">
                                                                 {{-- @if ($isCoInPrj || $isEmployeeInTeam) --}}
                                                                 @if (count($project->coordinators) > 0 && count($project->prjteams) > 0)
                                                                     <a class="open-project-mw dropdown-item d-flex align-items-center"
@@ -353,7 +357,7 @@
                                                                         Delete
                                                                     </a>
                                                                 @endif
-                                                                @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor' || $authUserType === 'Engineer')
+                                                                @if ($authUserType === 'Supervisor' || $authUserType === 'Engineer')
                                                                     <div class="text-center align-middle">
                                                                         @if (!count($project->coordinators) > 0 && !count($project->prjteams) > 0)
                                                                             Fill Project Co<br>&<br>Team!

@@ -18,6 +18,7 @@ use App\Models\Kustomer_Model;
 
 use App\Services\BreadcrumbService;
 use App\Jobs\CheckExpiredWorksheetsJob;
+use App\Jobs\ManualCheckExpiredWorksheetsJob;
 use Barryvdh\DomPDF\Facade\Pdf; // Import the PDF facade directly
 
 
@@ -42,7 +43,7 @@ abstract class Controller
         // Dispatch the job to check for expired worksheets
         // CheckExpiredWorksheetsJob::dispatch();
         // $this->runQueueWorkerv1();
-        // $this->dispatchJob();
+        $this->dispatchJob();
     }
 
 
@@ -73,7 +74,12 @@ abstract class Controller
         ////// /usr/local/bin/ea-php82 /home/itir9421/public_html/vppm.iti-if.my.id/artisan schedule:run >> /home/itir9421/cron.log 2>&1
 
         try {
-            CheckExpiredWorksheetsJob::dispatch();
+            // CheckExpiredWorksheetsJob::dispatch();   // Dispatch to queue schedule
+            // $job = new CheckExpiredWorksheetsJob();
+            // $job->handle();
+
+            // Dispatch the job to run immediately
+            ManualCheckExpiredWorksheetsJob::dispatch();
             Log::info('Job dispatched successfully.');
             return response()->json(['message' => 'Job dispatched.']);
         } catch (\Exception $e) {
@@ -116,8 +122,7 @@ abstract class Controller
         $user = auth()->user();
         $authUserType = auth()->user()->type;
 
-        if ($authUserType != "Client")
-        {
+        if ($authUserType != "Client") {
             // $authenticated_user_data = Karyawan_Model::with(['jabatan.karyawan', 'daftar_login.karyawan', 'daftar_login_4get.karyawan' => function ($query) {
             //     $authenticated_user_data = Karyawan_Model::with(['jabatan.karyawan', 'daftar_login_4get.karyawan' => function ($query) {
             //         $query->orderBy('created_at', 'desc')->withoutTrashed()->take(1);
@@ -138,9 +143,7 @@ abstract class Controller
                 $query->orderBy('created_at', 'desc')->withoutTrashed()->take(1);
             }, 'jabatan.karyawan'])
                 ->find($user->id_karyawan);
-
-
-        }else{
+        } else {
             $authenticated_user_data = Kustomer_Model::with(
                 [
                     'daftar_login_4get.client' => function ($query) {

@@ -329,7 +329,7 @@
                                                 <td colspan="3" class="text-nowrap"><strong>FINISH TIME</strong></td>
                                                 <td class="pl-2">: </td>
                                                 <td>
-                                                    {{ $loadDataWS->finish_time_ws ? convertTime($loadDataWS->finish_time_ws) : '-' }}
+                                                    {{ $loadDataWS->finish_time_ws != null ? convertTime($loadDataWS->finish_time_ws) : '-' }}
                                                 </td>
                                             </tr>
 
