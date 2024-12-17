@@ -18,8 +18,8 @@ class tb_ProjectsSeeder extends Seeder
 
         //  id_project,	    na_project,                 start_project,                      deadline_project,                                   status_project, closed_at_project, show_to_client, id_client, order
         $ProjectList = [
-            ['PRJ-24-0001', 'Our First Project Test',   Carbon::tomorrow()->setTime(0, 0),  Carbon::yesterday()->setTime(0, 0),    'OPEN',         null,               1,             1,         1],
-            ['PRJ-24-0002', 'Our Second Project Test',  Carbon::tomorrow()->setTime(0, 0),  Carbon::tomorrow()->addMonths(6)->setTime(0, 0),    'OPEN',         null,               0,             1,         2],
+            ['PRJ-24-0001', 'Our First Project Test',   Carbon::tomorrow()->setTime(0, 0),  Carbon::tomorrow()->addMonths(3)->setTime(0, 0),    'OPEN',         null,               1,             1,         1],
+            ['PRJ-24-0002', 'Our Second Project Test',  Carbon::yesterday()->setTime(13, 0),  Carbon::yesterday()->setTime(14, 0),    'OPEN',         null,               0,             1,         2],
             ['PRJ-24-0003', 'Our Third Project Test',   Carbon::tomorrow()->setTime(0, 0),  Carbon::tomorrow()->addMonths(6)->setTime(0, 0),    'OPEN',         null,               1,             1,         3]
         ];
         foreach ($ProjectList as $project) {

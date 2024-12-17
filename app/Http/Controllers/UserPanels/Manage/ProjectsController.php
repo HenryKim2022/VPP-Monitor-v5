@@ -28,6 +28,9 @@ use Illuminate\Validation\Rule;
 use App\Jobs\CheckExpiredWorksheetsJob;
 use App\Models\Coordinators_Model;
 
+use Illuminate\Support\Facades\Artisan;
+
+
 class ProjectsController extends Controller
 {
     // protected $breadcrumbService;
@@ -43,6 +46,7 @@ class ProjectsController extends Controller
         if ($process) {
             $authUserType = auth()->user()->type;
             $project = [];
+
             if ($authUserType === 'Client') {
                 $authIDClient = auth()->user()->id_client;
                 $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet', 'monitor' => function ($query) {
@@ -51,6 +55,7 @@ class ProjectsController extends Controller
                     ->where('id_client', $authIDClient)
                     ->where('show_to_client', 1)
                     ->withoutTrashed()
+                    ->orderBy('order')
                     ->get()
                     ->values();
             } else {
@@ -59,10 +64,10 @@ class ProjectsController extends Controller
                     $query->orderBy('order'); // Sort by the new order column in tb_monitoring
                 }])
                     ->withoutTrashed()
+                    ->orderBy('order')
                     ->get();
                 // ->sortByDesc('created_at');
             }
-
 
             $user = auth()->user();
             // $authenticated_user_data = Karyawan_Model::with('daftar_login.karyawan', 'daftar_login_4get.karyawan', 'jabatan.karyawan')->find($user->id_karyawan);
