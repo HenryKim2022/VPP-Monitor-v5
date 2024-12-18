@@ -776,11 +776,11 @@
                                                         @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor')
                                                             @if ($authUserType === 'Superuser' || $isCoInPrj)
                                                                 <td
-                                                                    class="{{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}cell-fit text-center align-middle">
+                                                                    class="{{ $authUserType === 'Superuser' || $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}cell-fit text-center align-middle">
                                                                     <div
-                                                                        class="dropdown {{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}d-lg-block d-sm-block d-md-block">
+                                                                        class="dropdown {{ $authUserType === 'Superuser' || $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}d-lg-block d-sm-block d-md-block">
                                                                         <button
-                                                                            class="btn btn-icon navbar-toggler p-0 d-inline-flex"
+                                                                            class="dragable-handle btn btn-icon navbar-toggler p-0 d-inline-flex"
                                                                             type="button" id="tableActionDropdown"
                                                                             data-toggle="dropdown" aria-haspopup="true"
                                                                             aria-expanded="false">
@@ -820,7 +820,7 @@
                                                     @endif
 
                                                     <td
-                                                        class="{{ $authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '') }}cell-fit text-center align-middle">
+                                                        class="{{ $authUserType === 'Superuser' || $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}cell-fit text-center align-middle">
                                                         {{ $no++ }}</td>
 
                                                     <td class="text-start align-middle txt-break text-wrap">
@@ -2051,95 +2051,236 @@
                 });
             </script>
 
+            <style>
+                /* Add styles for the draggable rows */
+                .selected4drag-start {
+                    background-color: #d1e7dd !important;
+                    /* Light green background when selected for drag */
+                    cursor: grabbing !important;
+                    /* Change cursor to grabbing */
+                }
+
+                .selected4drag-end {
+                    background-color: #f8d7da !important;
+                    /* Light red background when released */
+                    cursor: default !important;
+                    /* Change cursor back to default */
+                }
+            </style>
+
+            @if ($authUserType === 'Superuser' || $isProjectOpen)
+                @if ($authUserType != 'Client' && $authUserType != 'Engineer')
+                    <script>
+                        // document.addEventListener('DOMContentLoaded', function() {
+                        //     var drake = dragula([document.getElementById('draggable-table')], {
+                        //         moves: function(el, container, handle) {
+                        //             return handle.classList.contains('dragable-handle');
+                        //         }
+                        //     });
+
+                        //     let selectedRow = null;
+                        //     // Select all rows and add event listeners to all handles
+                        //     const rows = document.querySelectorAll('#draggable-table tr');
+                        //     rows.forEach(row => {
+                        //         const handles = row.querySelectorAll('.dragable-handle'); // Select all handles in the row
+                        //         handles.forEach(handle => {
+                        //             // Add click event listener to each handle
+                        //             handle.addEventListener('click', function(e) {
+                        //                 handleRowClick(e, row);
+                        //             });
+
+                        //             // Add touchend event listener to each handle
+                        //             handle.addEventListener('touchend', function(e) {
+                        //                 e.preventDefault(); // Prevent default behavior
+                        //                 handleRowClick(e, row);
+                        //             });
+                        //         });
+                        //     });
+
+                        //     function handleRowClick(e, row) {
+                        //         console.log('Row clicked:', row);
+                        //         if (!selectedRow) {
+                        //             selectedRow = row;
+                        //             selectedRow.classList.add('selected4drag-start'); // Add the class when selecting
+                        //             console.log('Selected row to move:', selectedRow);
+                        //         } else {
+                        //             const targetRow = e.currentTarget.closest('tr');
+                        //             if (targetRow && targetRow !== selectedRow) {
+                        //                 const parent = selectedRow.parentNode;
+                        //                 parent.insertBefore(selectedRow, targetRow.nextSibling);
+                        //                 updateOrder();
+                        //                 console.log('Moved row after target:', targetRow);
+                        //             }
+                        //             selectedRow.classList.remove('selected4drag-start'); // Remove the start class
+                        //             selectedRow.classList.add(
+                        //                 'selected4drag-end'); // Add a different class to indicate the end of selection
+                        //             selectedRow = null; // Reset selectedRow
+                        //         }
+                        //     }
+
+                        //     function updateOrder() {
+                        //         var order = [];
+                        //         var rows = document.querySelectorAll('#draggable-table tr');
+                        //         rows.forEach(function(row, index) {
+                        //             order.push({
+                        //                 id: row.dataset.id,
+                        //                 order: index + 1
+                        //             });
+                        //         });
+                        //         fetch('{{ route('m.mon.dws.uor') }}', {
+                        //                 method: 'POST',
+                        //                 headers: {
+                        //                     'Content-Type': 'application/json',
+                        //                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        //                 },
+                        //                 body: JSON.stringify(order)
+                        //             })
+                        //             .then(response => response.json())
+                        //             .then(data => {
+                        //                 if (data.message) {
+                        //                     jsonToastReceiver(data.message);
+                        //                 }
+                        //                 console.log('Order updated:', data);
+                        //             })
+                        //             .catch((error) => {
+                        //                 if (error.message) {
+                        //                     jsonToastReceiver(error.message);
+                        //                 }
+                        //                 console.error('Error:', error);
+                        //             });
+                        //     }
+
+                        //     drake.on('drop', function(el, target, source, sibling) {
+                        //         updateOrder();
+                        //     });
+                        // });
 
 
 
-            @if ($authUserType != 'Client' && $authUserType != 'Engineer')
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        var drake = dragula([document.getElementById('draggable-table')], {
-                            moves: function(el, container, handle) {
-                                return handle.classList.contains('dragable-handle');
-                            }
-                        });
 
-                        let selectedRow = null;
-                        // Select all rows and add event listeners to all handles
-                        const rows = document.querySelectorAll('#draggable-table tr');
-                        rows.forEach(row => {
-                            const handles = row.querySelectorAll('.dragable-handle'); // Select all handles in the row
-                            handles.forEach(handle => {
-                                // Add click event listener to each handle
-                                handle.addEventListener('click', function(e) {
-                                    handleRowClick(e, row);
-                                });
 
-                                // Add touchend event listener to each handle
-                                handle.addEventListener('touchend', function(e) {
-                                    e.preventDefault(); // Prevent default behavior
-                                    handleRowClick(e, row);
-                                });
-                            });
-                        });
-
-                        function handleRowClick(e, row) {
-                            console.log('Row clicked:', row);
-                            if (!selectedRow) {
-                                selectedRow = row;
-                                selectedRow.classList.add('selected4drag-start'); // Add the class when selecting
-                                console.log('Selected row to move:', selectedRow);
-                            } else {
-                                const targetRow = e.currentTarget.closest('tr');
-                                if (targetRow && targetRow !== selectedRow) {
-                                    const parent = selectedRow.parentNode;
-                                    parent.insertBefore(selectedRow, targetRow.nextSibling);
-                                    updateOrder();
-                                    console.log('Moved row after target:', targetRow);
+                        document.addEventListener('DOMContentLoaded', function() {
+                            var drake = dragula([document.getElementById('draggable-table')], {
+                                moves: function(el, container, handle) {
+                                    return handle.classList.contains('dragable-handle');
                                 }
-                                selectedRow.classList.remove('selected4drag-start'); // Remove the start class
-                                selectedRow.classList.add(
-                                'selected4drag-end'); // Add a different class to indicate the end of selection
-                                selectedRow = null; // Reset selectedRow
-                            }
-                        }
+                            });
 
-                        function updateOrder() {
-                            var order = [];
-                            var rows = document.querySelectorAll('#draggable-table tr');
-                            rows.forEach(function(row, index) {
-                                order.push({
-                                    id: row.dataset.id,
-                                    order: index + 1
+                            let selectedRow = null;
+
+                            // Select all rows and add event listeners to all handles
+                            const rows = document.querySelectorAll('#draggable-table tr');
+                            rows.forEach(row => {
+                                const handles = row.querySelectorAll('.dragable-handle'); // Select all handles in the row
+                                handles.forEach(handle => {
+                                    // Add click event listener to each handle
+                                    handle.addEventListener('click', function(e) {
+                                        handleRowClick(e, row);
+                                    });
+
+                                    // Add touchend event listener to each handle
+                                    handle.addEventListener('touchend', function(e) {
+                                        e.preventDefault(); // Prevent default behavior
+                                        handleRowClick(e, row);
+                                    });
                                 });
                             });
-                            fetch('{{ route('m.mon.dws.uor') }}', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                    },
-                                    body: JSON.stringify(order)
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.message) {
-                                        jsonToastReceiver(data.message);
-                                    }
-                                    console.log('Order updated:', data);
-                                })
-                                .catch((error) => {
-                                    if (error.message) {
-                                        jsonToastReceiver(error.message);
-                                    }
-                                    console.error('Error:', error);
-                                });
-                        }
 
-                        drake.on('drop', function(el, target, source, sibling) {
-                            updateOrder();
+                            function handleRowClick(e, row) {
+                                console.log('Row clicked:', row);
+                                if (!selectedRow) {
+                                    selectedRow = row;
+                                    selectedRow.classList.add('selected4drag-start'); // Add the class when selecting
+                                    console.log('Selected row to move:', selectedRow);
+                                } else {
+                                    const targetRow = e.currentTarget.closest('tr');
+                                    if (targetRow && targetRow !== selectedRow) {
+                                        const parent = selectedRow.parentNode;
+                                        parent.insertBefore(selectedRow, targetRow.nextSibling);
+                                        updateOrder();
+                                        console.log('Moved row after target:', targetRow);
+                                    }
+                                    selectedRow.classList.remove('selected4drag-start'); // Remove the start class
+                                    selectedRow.classList.add(
+                                    'selected4drag-end'); // Add a different class to indicate the end of selection
+                                    setTimeout(() => {
+                                        // Select all rows and remove the classes
+                                        const allRows = document.querySelectorAll('#draggable-table tr');
+                                        allRows.forEach(row => {
+                                            row.classList.remove('selected4drag-end'); // Remove the end class
+                                            row.classList.remove(
+                                            'selected4drag-start'); // Remove the start class if needed
+                                        });
+                                    }, 3000);
+
+                                    selectedRow = null; // Reset selectedRow
+                                }
+                            }
+
+                            function updateOrder() {
+                                var order = [];
+                                var rows = document.querySelectorAll('#draggable-table tr');
+                                rows.forEach(function(row, index) {
+                                    order.push({
+                                        id: row.dataset.id,
+                                        order: index + 1
+                                    });
+                                });
+                                fetch('{{ route('m.mon.dws.uor') }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                        body: JSON.stringify(order)
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.message) {
+                                            jsonToastReceiver(data.message);
+                                        }
+                                        console.log('Order updated:', data);
+                                    })
+                                    .catch((error) => {
+                                        if (error.message) {
+                                            jsonToastReceiver(error.message);
+                                        }
+                                        console.error('Error:', error);
+                                    });
+                            }
+
+                            drake.on('drop', function(el, target, source, sibling) {
+                                updateOrder();
+                                if (selectedRow) {
+                                    selectedRow.classList.remove('selected4drag-start'); // Remove the start class
+                                    selectedRow.classList.add('selected4drag-end'); // Add end class on drop
+
+                                    // Remove the .selected4drag-end class after 3 seconds
+                                    setTimeout(() => {
+                                        // Select all rows and remove the classes
+                                        const allRows = document.querySelectorAll('#draggable-table tr');
+                                        allRows.forEach(row => {
+                                            row.classList.remove(
+                                            'selected4drag-end'); // Remove the end class
+                                            row.classList.remove(
+                                            'selected4drag-start'); // Remove the start class if needed
+                                        });
+                                    }, 3000);
+
+                                    selectedRow = null; // Reset selectedRow
+                                }
+                            });
+
+                            drake.on('cancel', function(el) {
+                                if (selectedRow) {
+                                    selectedRow.classList.remove(
+                                    'selected4drag-start'); // Remove the start class if drag is canceled
+                                    selectedRow = null; // Reset selectedRow
+                                }
+                            });
                         });
-                    });
-                </script>
+                    </script>
+                @endif
             @endif
 
 

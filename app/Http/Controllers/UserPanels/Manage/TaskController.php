@@ -261,13 +261,25 @@ class TaskController extends Controller
                 $category->current_progress = number_format($remainingProgress, 1);
             }
 
-            // Filter taskCategoryList based on the id_monitoring of the fetched task
-            $filteredTaskCategoryList = $taskCategoryList->filter(function ($category) use ($id_monitoring) {
-                return $category->id_monitoring == $id_monitoring; // Assuming id_monitoring links categories to tasks
-            });
+            // // Filter taskCategoryList based on the id_monitoring of the fetched task
+            // $filteredTaskCategoryList = $taskCategoryList->filter(function ($category) use ($id_monitoring) {
+            //     return $category->id_monitoring == $id_monitoring; // Assuming id_monitoring links categories to tasks
+            // });
 
-            // Prepare taskList with current progress
-            $taskList = $filteredTaskCategoryList->map(function ($category) use ($daftarTask) {
+            // // Prepare taskList with current progress
+            // $taskList = $filteredTaskCategoryList->map(function ($category) use ($daftarTask) {
+            //     $selected = ($daftarTask && $category->id_monitoring == $daftarTask->id_monitoring);
+            //     $currentProgress = ($category->current_progress == 0 || $category->current_progress == 0.0 ? 0 : $category->current_progress);
+            //     return [
+            //         'value' => $category->id_monitoring,
+            //         'text' => '(' . $currentProgress . '% left) ' . $category->category,
+            //         'selected' => $selected,
+            //         'current_progress' => $category->qty, // Assuming qty is the progress indicator
+            //     ];
+            // });
+
+            // Prepare taskList with current progress without filtering by id_monitoring
+            $taskList = $taskCategoryList->map(function ($category) use ($daftarTask) {
                 $selected = ($daftarTask && $category->id_monitoring == $daftarTask->id_monitoring);
                 $currentProgress = ($category->current_progress == 0 || $category->current_progress == 0.0 ? 0 : $category->current_progress);
                 return [
@@ -277,6 +289,7 @@ class TaskController extends Controller
                     'current_progress' => $category->qty, // Assuming qty is the progress indicator
                 ];
             });
+
 
             // Return queried data as a JSON response
             return response()->json([
@@ -289,10 +302,9 @@ class TaskController extends Controller
                 'id_project'            => $daftarTask->id_project,
                 'taskList'              => $taskList,
                 'arrivalTime'           => $daftarTask->worksheet->arrival_time_ws,
-                'finishTime'            =>$daftarTask->worksheet->finish_time_ws,
+                'finishTime'            => $daftarTask->worksheet->finish_time_ws,
 
             ]);
-
         } else {
             // Handle the case when the DaftarTask_Model with the given taskID is not found
             return response()->json(['error' => 'DaftarTask_Model not found'], 404);
