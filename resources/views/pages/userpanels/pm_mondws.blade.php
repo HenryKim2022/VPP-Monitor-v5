@@ -776,9 +776,9 @@
                                                         @if ($authUserType === 'Superuser' || $authUserType === 'Supervisor')
                                                             @if ($authUserType === 'Superuser' || $isCoInPrj)
                                                                 <td
-                                                                    class="{{ $authUserType === 'Superuser' || $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}cell-fit text-center align-middle">
+                                                                    class="{{ $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}cell-fit text-center align-middle">
                                                                     <div
-                                                                        class="dropdown {{ $authUserType === 'Superuser' || $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}d-lg-block d-sm-block d-md-block">
+                                                                        class="dropdown {{ $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}d-lg-block d-sm-block d-md-block">
                                                                         <button
                                                                             class="dragable-handle btn btn-icon navbar-toggler p-0 d-inline-flex"
                                                                             type="button" id="tableActionDropdown"
@@ -820,7 +820,7 @@
                                                     @endif
 
                                                     <td
-                                                        class="{{ $authUserType === 'Superuser' || $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}cell-fit text-center align-middle">
+                                                        class="{{ $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}cell-fit text-center align-middle">
                                                         {{ $no++ }}</td>
 
                                                     <td class="text-start align-middle txt-break text-wrap">
@@ -2068,7 +2068,7 @@
                 }
             </style>
 
-            @if ($authUserType === 'Superuser' || $isProjectOpen)
+            @if ($isProjectOpen)
                 @if ($authUserType != 'Client' && $authUserType != 'Engineer')
                     <script>
                         // document.addEventListener('DOMContentLoaded', function() {
