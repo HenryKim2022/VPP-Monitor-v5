@@ -4,19 +4,28 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
+    /////// NOTE
+    //// Everytime updating this, must do
+    ////    php artisan config:clear
+    ////    php artisan cache:clear
+    ////    php artisan route:clear
+
     protected function schedule(Schedule $schedule)
     {
-        // // Schedule your jobs here
-        // $schedule->job(new \App\Jobs\CheckExpiredWorksheetsJob)->everyFiveMinutes();
-        // // // Schedule the command to run hourly
-        // // $schedule->command('worksheets:check-expired')->hourly();
+        Log::info('Scheduler is running'); // Add this line for debugging
 
-        // $schedule->command('run:every-three-seconds')->everyMinute();
-        // $schedule->command('run:every-hour')->hourly();
-        $schedule->command('run:every-hour')->everyMinute();
+        // Schedule the command to run immediately
+        $schedule->command('app:database-weekly-backup')->everyMinute(); // For testing purposes
+
+        // Schedule the command to run weekly on Friday at 12:00 AM
+        $schedule->command('app:database-weekly-backup')->weeklyOn(5, '00:00');
+
+        // Schedule the command to auto-close expired worksheets every minute
+        $schedule->command('app:auto-close-expired-worksheets')->everyMinute();
     }
 
     protected function commands()

@@ -1805,7 +1805,7 @@
                             $('#daftarDWSTable th:contains("Arrival")').css('width', '1.5%');
                             $('#daftarDWSTable th:contains("Finish")').css('width', '1.5%');
                             $('#daftarDWSTable th:contains("Executed By")').css('width', `${ TaskTH_w }%`);
-                            $('#daftarDWSTable th:contains("Status")').css('width', '1.5%');
+                            $('#daftarDWSTable th:contains("Status")').css('width', '1%');
 
 
 

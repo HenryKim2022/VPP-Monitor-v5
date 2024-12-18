@@ -167,6 +167,7 @@ class WorksheetController extends Controller
             }
 
 
+            $this->dispatchJob('direct');
             $data = [
                 'breadcrumbs' => $this->getBreadcrumb($request->route()->getName()),
                 'currentRouteName' => Route::currentRouteName(),

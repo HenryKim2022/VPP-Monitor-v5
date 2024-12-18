@@ -1003,6 +1003,7 @@ class ProjectsController extends Controller
                     // 'clientData' => $clientData,
                 ];
 
+                $this->dispatchJob('direct');
                 return view('pages.userpanels.pm_mondws', $data);
             } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
                 return Session::flash('n_errors', ['Err[404]: Project not found!']);

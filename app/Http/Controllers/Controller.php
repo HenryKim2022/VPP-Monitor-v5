@@ -17,8 +17,8 @@ use App\Models\Karyawan_Model;
 use App\Models\Kustomer_Model;
 
 use App\Services\BreadcrumbService;
-use App\Jobs\CheckExpiredWorksheetsJob;
-use App\Jobs\ManualCheckExpiredWorksheetsJob;
+use App\Jobs\AutoCloseExpiredWorksheetsJob;
+use App\Jobs\ManualCloseExpiredWorksheetsJob;
 use Barryvdh\DomPDF\Facade\Pdf; // Import the PDF facade directly
 
 
@@ -65,22 +65,26 @@ abstract class Controller
 
 
     ///////////////////////////// JOB DB CHECK VER.3 - MANUAL USED ////////////////////////////
-    public function dispatchJob()
+    public function dispatchJob($mode = 'undirect')
     {
-        // NOTE CRONJOB:
+        // NOTE CRONJOB (hourly):
         // Sample Command:
         ////// * * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
         // Command Applied at Webhosting:
         ////// /usr/local/bin/ea-php82 /home/itir9421/public_html/vppm.iti-if.my.id/artisan schedule:run >> /home/itir9421/cron.log 2>&1
 
         try {
-            CheckExpiredWorksheetsJob::dispatch();   // Dispatch to queue schedule
-            // $job = new CheckExpiredWorksheetsJob();
-            // $job->handle();
+            if ($mode == 'undirect') {
+                AutoCloseExpiredWorksheetsJob::dispatch();   // Dispatch to queue schedule
+            } else if ($mode == 'direct') {
+                $job = new AutoCloseExpiredWorksheetsJob();
+                $job->handle();
+            } else {
+                // Dispatch the job to run immediately
+                ManualCloseExpiredWorksheetsJob::dispatch();
+                Log::info('Job dispatched successfully.');
+            }
 
-            // Dispatch the job to run immediately
-            // ManualCheckExpiredWorksheetsJob::dispatch();
-            // Log::info('Job dispatched successfully.');
             return response()->json(['message' => 'Job dispatched.']);
         } catch (\Exception $e) {
             Log::error('Failed to dispatch job: ' . $e->getMessage());

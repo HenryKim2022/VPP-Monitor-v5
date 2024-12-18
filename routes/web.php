@@ -27,17 +27,20 @@ Route::get('/', [LoginPageController::class, 'index'])->name('login.page');
 
 /////////////////////////////////////////////////// <<<  START: ROUTES (WITH USERGROUP) >>> //////////////////////////////////////
 Route::prefix('')->name('login.')->middleware(['auth.notloggedin'])->group(function () {
-    Route::get('/login', 'App\Http\Controllers\Auth\LoginPageController@showLogin')->name('page');
+    // Route::get('/login', 'App\Http\Controllers\Auth\LoginPageController@showLogin')->name('page');
+    Route::get('/login', 'App\Http\Controllers\Auth\LoginPageController@showLogin')->name('show');
     Route::post('/login', 'App\Http\Controllers\Auth\LoginPageController@doLogin')->name('do');
 });
 
 
 Route::prefix('')->name('reset.')->middleware(['auth.notloggedin'])->group(function () {
     Route::get('/forgot-password', 'App\Http\Controllers\Auth\PasswordResetController@index')->name('page');
-    Route::post('/forgot-password/send-token', 'App\Http\Controllers\Auth\PasswordResetController@doSend')->name('send');
-    Route::get('/forgot-password/send-token', 'App\Http\Controllers\Auth\PasswordResetController@doSend')->name('send');
-    Route::post('/forgot-password/reset-form/{token}', 'App\Http\Controllers\Auth\PasswordResetController@showReset')->name('form');
-    Route::get('/forgot-password/reset-form/{token}', 'App\Http\Controllers\Auth\PasswordResetController@showReset')->name('form');
+    // Route::post('/forgot-password/send-token', 'App\Http\Controllers\Auth\PasswordResetController@doSend')->name('send');
+    // Route::get('/forgot-password/send-token/type', 'App\Http\Controllers\Auth\PasswordResetController@doSend')->name('send');
+    Route::match(['get', 'post'], '/forgot-password/send-token', 'App\Http\Controllers\Auth\PasswordResetController@doSend')->name('send');
+    // Route::post('/forgot-password/reset-form/{token}', 'App\Http\Controllers\Auth\PasswordResetController@showReset')->name('form');
+    // Route::get('/forgot-password/reset-form/{token}', 'App\Http\Controllers\Auth\PasswordResetController@showReset')->name('form');
+    Route::match(['get', 'post'], '/forgot-password/reset-form/{token}', 'App\Http\Controllers\Auth\PasswordResetController@showReset')->name('form');
     Route::post('/forgot-password/do-reset', 'App\Http\Controllers\Auth\PasswordResetController@doReset')->name('do');
 });
 
@@ -141,10 +144,12 @@ Route::middleware(['auth', CheckRememberToken::class])->group(function () {
     Route::post('/projects/edit', [ProjectsController::class, 'edit_project'])->name('m.projects.edit');
     Route::post('/projects/delete', [ProjectsController::class, 'delete_project'])->name('m.projects.del');
     Route::post('/projects/reset', [ProjectsController::class, 'reset_project'])->name('m.projects.reset');
-    Route::post('/projects/load', [ProjectsController::class, 'get_project'])->name('m.projects.getprj');
-    Route::get('/projects/load', [ProjectsController::class, 'get_project'])->name('m.projects.getprj');
-    Route::post('/projects/load4add', [ProjectsController::class, 'get_project_4add'])->name('m.projects.getprj4add');
-    Route::get('/projects/load4add', [ProjectsController::class, 'get_project_4add'])->name('m.projects.getprj4add');
+    // Route::post('/projects/load', [ProjectsController::class, 'get_project'])->name('m.projects.getprj');
+    // Route::get('/projects/load', [ProjectsController::class, 'get_project'])->name('m.projects.getprj');
+    Route::match(['get', 'post'], '/projects/load', [ProjectsController::class, 'get_project'])->name('m.projects.getprj');
+    // Route::post('/projects/load4add', [ProjectsController::class, 'get_project_4add'])->name('m.projects.getprj4add');
+    // Route::get('/projects/load4add', [ProjectsController::class, 'get_project_4add'])->name('m.projects.getprj4add');
+    Route::match(['get', 'post'], '/projects/load4add', [ProjectsController::class, 'get_project_4add'])->name('m.projects.getprj4add');
     Route::get('/projects/loadmondws', [ProjectsController::class, 'get_prjmondws'])->name('m.projects.getprjmondws');
     Route::get('/projects/navigate', [WorksheetController::class, 'index'])->name('m.ws');
     Route::post('/projects/sh-to-client', [ProjectsController::class, 'up_show_toclient'])->name('m.projects.modprj.sh2cl');
@@ -189,10 +194,10 @@ Route::middleware(['auth', CheckRememberToken::class])->group(function () {
     Route::post('/projects/m-monitoring-worksheet/ws/task/delete', [TaskController::class, 'delete_task'])->name('m.task.del');
     Route::post('/projects/m-monitoring-worksheet/ws/task/reset', [TaskController::class, 'reset_task'])->name('m.task.reset');
     Route::post('/projects/m-monitoring-worksheet/ws/task/edit', [TaskController::class, 'edit_task'])->name('m.task.edit');
-    Route::post('/projects/m-monitoring-worksheet/ws/task/load', [TaskController::class, 'get_task'])->name('m.task.gettask');
-    Route::get('/projects/m-monitoring-worksheet/ws/task/load', [TaskController::class, 'get_task'])->name('m.task.gettask');
-    // Route::get('/m-monitoring-worksheet/ws/task/load', [TaskController::class, 'get_task'])->name('m.task.gettask');
-
+    // Route::post('/projects/m-monitoring-worksheet/ws/task/load', [TaskController::class, 'get_task'])->name('m.task.gettask');
+    // Route::get('/projects/m-monitoring-worksheet/ws/task/load', [TaskController::class, 'get_task'])->name('m.task.gettask');
+    // // Route::get('/m-monitoring-worksheet/ws/task/load', [TaskController::class, 'get_task'])->name('m.task.gettask');
+    Route::match(['get', 'post'], '/projects/m-monitoring-worksheet/ws/task/load', [TaskController::class, 'get_task'])->name('m.task.gettask');
     // Route::post('/projects/m-monitoring-worksheet/ws/task/print-dom-pdf', [TaskController::class, 'print_task'])->name('m.task.printdomtask');
     Route::match(['get', 'post'], '/projects/m-monitoring-worksheet/ws/task/print-dom-pdf', [TaskController::class, 'print_task'])->name('m.task.printdomtask');
     Route::post('/projects/m-monitoring-worksheet/ws/task/save-dom-pdf', [TaskController::class, 'save_task'])->name('m.task.savedomtask');
