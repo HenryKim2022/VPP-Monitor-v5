@@ -1513,15 +1513,20 @@
                                                         </td>
                                                         <td
                                                             class="text-center align-middle text-nowrap {{ $isExpired ? 'text-white' : '' }}">
+                                                            @php
+                                                                $ws_status = $ws->status_ws;
+                                                                $blinkClass =
+                                                                    $ws_status == 'OPEN' ? 'blink-bg' : '';
+                                                                $expiredDT = $ws->expired_at_ws ? convertDateTime($ws->expired_at_ws) : null;
+                                                            @endphp
                                                             @if ($authUserType == 'Superuser')
-                                                                @php
-                                                                    $ws_status = $ws->status_ws;
-                                                                    $blinkClass =
-                                                                        $ws_status == 'OPEN' ? 'blink-bg' : '';
-                                                                @endphp
                                                                 @if ($isStatusOpen)
                                                                     @if (isset($modalData['modal_lock']))
                                                                         <button
+                                                                            data-toggle="tooltip" data-popup="tooltip-custom"
+                                                                            data-placement="bottom"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT }}"
+                                                                            data-html="true"
                                                                             class="lock-ws-cmd btn rounded small text-white {{ $blinkClass }}"
                                                                             lock_ws_id_value = "{{ $ws->id_ws ?: 0 }}"
                                                                             lock_prj_id_value = "{{ $ws->id_project ?: 0 }}"
@@ -1532,6 +1537,10 @@
                                                                 @else
                                                                     @if (isset($modalData['modal_unlock']))
                                                                         <button
+                                                                            data-toggle="tooltip" data-popup="tooltip-custom"
+                                                                            data-placement="bottom"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT }}"
+                                                                            data-html="true"
                                                                             class="unlock-ws-cmd btn bg-success rounded small text-white"
                                                                             unlock_ws_id_value = "{{ $ws->id_ws ?: 0 }}"
                                                                             unlock_prj_id_value = "{{ $ws->id_project ?: 0 }}"
@@ -1546,10 +1555,15 @@
                                                                     $blinkClass =
                                                                         $ws_status == 'OPEN' ? 'blink-bg' : '';
                                                                 @endphp
+
                                                                 @if ($ws->status_ws == 'OPEN')
                                                                     <div
                                                                         class="row g-2 needs-validation d-flex justify-content-center">
                                                                         <button
+                                                                            data-toggle="tooltip" data-popup="tooltip-custom"
+                                                                            data-placement="bottom"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT }}"
+                                                                            data-html="true"
                                                                             class="btn rounded small text-white {{ $blinkClass }}"
                                                                             style="padding: 0.4rem">
                                                                             <i class="fas fa-lock-open fa-shake fa-sm"></i>
@@ -1557,6 +1571,10 @@
                                                                     </div>
                                                                 @else
                                                                     <div
+                                                                        data-toggle="tooltip" data-popup="tooltip-custom"
+                                                                        data-placement="bottom"
+                                                                        data-original-title="Expired at:<br>{{ $expiredDT }}"
+                                                                        data-html="true"
                                                                         class="row g-2 needs-validation d-flex justify-content-center">
                                                                         <button
                                                                             class="btn bg-success rounded small text-white"
