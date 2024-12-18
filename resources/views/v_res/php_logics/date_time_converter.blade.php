@@ -45,16 +45,16 @@
         }
     }
     if (!function_exists('convertDateTime')) {
-        function convertDateTime($dateTime)
+        function convertDateTime($dateTime, $defaultLocaleDate = 'in', $defaultLocaleTime = 'en')
         {
             // Check if $dateTime is already a Carbon instance
             if (!($dateTime instanceof \Carbon\Carbon)) {
                 $dateTime = \Carbon\Carbon::parse($dateTime);
             }
 
-            \Carbon\Carbon::setLocale('in');
+            \Carbon\Carbon::setLocale($defaultLocaleDate);
             $formattedDate = $dateTime->isoFormat('dddd, DD MMM YYYY');
-            \Carbon\Carbon::setLocale('en');
+            \Carbon\Carbon::setLocale($defaultLocaleTime);
             $formattedTime = $dateTime->isoFormat('hh:mm:ss A');
             $formattedDateTime = $formattedDate . ' at ' . $formattedTime;
 

@@ -1517,7 +1517,7 @@
                                                                 $ws_status = $ws->status_ws;
                                                                 $blinkClass =
                                                                     $ws_status == 'OPEN' ? 'blink-bg' : '';
-                                                                $expiredDT = $ws->expired_at_ws ? convertDateTime($ws->expired_at_ws) : null;
+                                                                $expiredDT = $authUserType != 'Client' ? ($ws->expired_at_ws ? convertDateTime($ws->expired_at_ws, 'en') : null) : null;
                                                             @endphp
                                                             @if ($authUserType == 'Superuser')
                                                                 @if ($isStatusOpen)
@@ -1525,7 +1525,7 @@
                                                                         <button
                                                                             data-toggle="tooltip" data-popup="tooltip-custom"
                                                                             data-placement="bottom"
-                                                                            data-original-title="Expired at:<br>{{ $expiredDT }}"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT  : '' }}"
                                                                             data-html="true"
                                                                             class="lock-ws-cmd btn rounded small text-white {{ $blinkClass }}"
                                                                             lock_ws_id_value = "{{ $ws->id_ws ?: 0 }}"
@@ -1539,7 +1539,7 @@
                                                                         <button
                                                                             data-toggle="tooltip" data-popup="tooltip-custom"
                                                                             data-placement="bottom"
-                                                                            data-original-title="Expired at:<br>{{ $expiredDT }}"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT  : '' }}"
                                                                             data-html="true"
                                                                             class="unlock-ws-cmd btn bg-success rounded small text-white"
                                                                             unlock_ws_id_value = "{{ $ws->id_ws ?: 0 }}"
@@ -1562,7 +1562,7 @@
                                                                         <button
                                                                             data-toggle="tooltip" data-popup="tooltip-custom"
                                                                             data-placement="bottom"
-                                                                            data-original-title="Expired at:<br>{{ $expiredDT }}"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT  : '' }}"
                                                                             data-html="true"
                                                                             class="btn rounded small text-white {{ $blinkClass }}"
                                                                             style="padding: 0.4rem">
@@ -1573,7 +1573,7 @@
                                                                     <div
                                                                         data-toggle="tooltip" data-popup="tooltip-custom"
                                                                         data-placement="bottom"
-                                                                        data-original-title="Expired at:<br>{{ $expiredDT }}"
+                                                                        data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT  : '' }}"
                                                                         data-html="true"
                                                                         class="row g-2 needs-validation d-flex justify-content-center">
                                                                         <button
@@ -1659,8 +1659,8 @@
                             paginate: {
                                 first: 'First',
                                 last: 'Last',
-                                next: '&rarr;',
-                                previous: '&larr;'
+                                // next: '&rarr;',
+                                // previous: '&larr;'
                             }
                         },
                         scrollCollapse: true,
@@ -1778,8 +1778,8 @@
                             paginate: {
                                 first: 'First',
                                 last: 'Last',
-                                next: '&rarr;',
-                                previous: '&larr;'
+                                // next: '&rarr;',
+                                // previous: '&larr;'
                             }
                         },
                         scrollCollapse: true,
@@ -2072,14 +2072,14 @@
             <style>
                 /* Add styles for the draggable rows */
                 .selected4drag-start {
-                    background-color: #d1e7dd !important;
+                    background-color: #ff9f43 !important;
                     /* Light green background when selected for drag */
                     cursor: grabbing !important;
                     /* Change cursor to grabbing */
                 }
 
                 .selected4drag-end {
-                    background-color: #f8d7da !important;
+                    background-color: #28c76f !important;
                     /* Light red background when released */
                     cursor: default !important;
                     /* Change cursor back to default */

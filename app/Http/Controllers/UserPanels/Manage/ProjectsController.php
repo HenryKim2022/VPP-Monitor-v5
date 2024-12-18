@@ -927,7 +927,9 @@ class ProjectsController extends Controller
                 // ->withoutTrashed()
                 // ->first();
 
-                $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet'])
+                $project = Projects_Model::with(['prjteams.team.karyawans', 'coordinators.karyawan', 'client', 'worksheet' => function ($query) {
+                    $query->orderBy('working_date_ws','asc')->orderBy('id_ws','asc');   // Sort by working_date_ws and then by id_ws
+                }])
                     ->where('id_project', $projectId)
                     ->withoutTrashed()
                     ->first();
