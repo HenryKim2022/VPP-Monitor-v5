@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
         // // $schedule->command('worksheets:check-expired')->hourly();
 
         // $schedule->command('run:every-three-seconds')->everyMinute();
-        $schedule->command('run:every-hour')->hourly();
+        // $schedule->command('run:every-hour')->hourly();
+        $schedule->command('run:every-hour')->everyMinute();
     }
 
     protected function commands()

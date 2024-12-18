@@ -14,15 +14,15 @@ class RunEveryThreeSeconds extends Command
     public function handle()
     {
         // Run the job every 2 seconds for a total of 60 seconds (20 times)
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 3600; $i++) {
             // Dispatch the job
             CheckExpiredWorksheetsJob::dispatch();
 
             // Log the action (optional)
             Log::info('CheckExpiredWorksheetsJob dispatched.');
 
-            // Wait for 2 seconds
-            sleep(2);
+            // Wait for 3 seconds
+            sleep(seconds: 3);
         }
 
         $this->info('Job executed every 2 seconds for 1 minute.');

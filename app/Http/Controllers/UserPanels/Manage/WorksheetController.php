@@ -70,7 +70,8 @@ class WorksheetController extends Controller
                 // }
                 // ,
                 'task' => function ($query) use ($projectID) {
-                    $query->where('id_project', $projectID);
+                    $query->where('id_project', $projectID)
+                    ->orderBy('start_time_task', 'asc');
                 }
                 // ,
                 // 'task.monitor' => function ($query) use ($projectID) {
@@ -111,7 +112,7 @@ class WorksheetController extends Controller
                 ->first();
 
 
-            $taskCategoryList = Monitoring_Model::where('id_project', $projectID)->withoutTrashed()->get();
+            $taskCategoryList = Monitoring_Model::where('id_project', $projectID)->withoutTrashed()->orderBy('order')->get();
             // foreach ($taskCategoryList as $category) {
             //     $total = 0; // Initialize total for this category
             //     $qty = $category->qty;

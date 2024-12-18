@@ -224,7 +224,7 @@ class TaskController extends Controller
             $id_monitoring = $daftarTask->id_monitoring;
 
             // Fetch all categories for the project
-            $taskCategoryList = Monitoring_Model::where('id_project', $projectID)->withoutTrashed()->get();
+            $taskCategoryList = Monitoring_Model::where('id_project', $projectID)->withoutTrashed()->orderBy('order')->get();
 
             // Initialize progress for each category
             foreach ($taskCategoryList as $category) {
