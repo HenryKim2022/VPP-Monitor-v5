@@ -136,12 +136,18 @@ class ProjectsController extends Controller
                         }
                     },
                 ],
+                'co-select2-assign' => 'required|array|min:1', // Ensure at least one item in the array
+                'engteam-select2-assign' => 'required|array|min:1', // Ensure at least one item in the array
 
             ],
             [
                 'project-id' => 'The project-id field is required.',
                 'project-name' => 'The project-name field is required.',
-                'start-deadline.regex' => 'The start-deadline must be in the format YYYY-MM-DD to YYYY-MM-DD.'
+                'start-deadline.regex' => 'The start-deadline must be in the format YYYY-MM-DD to YYYY-MM-DD.',
+                'co-select2-assign.required' => 'At least one coordinator must be assigned.',
+                'co-select2-assign.min' => 'At least one coordinator must be assigned.',
+                'engteam-select2-assign.required' => 'At least one engineering team must be assigned.',
+                'engteam-select2-assign.min' => 'At least one engineering team must be assigned.',
             ]
         );
 
@@ -637,12 +643,18 @@ class ProjectsController extends Controller
                     },
                 ],
                 'bsvalidationcheckbox1' => 'required',
+                'edit-co-select2-assign' => 'required|array|min:1', // Ensure at least one coordinator is selected
+                'edit-engteam-select2-assign' => 'required|array|min:1', // Ensure at least one engineering team is selected
 
             ],
             [
                 'edit-project-id.required'  => 'The project-id field is required.',
                 'bsvalidationcheckbox1.required' => 'The saving agreement field is required.',
                 'edit-start-deadline.regex' => 'The start-deadline must be in the format YYYY-MM-DD to YYYY-MM-DD.',
+                'edit-co-select2-assign.required' => 'At least one coordinator must be assigned.',
+                'edit-co-select2-assign.min' => 'At least one coordinator must be assigned.',
+                'edit-engteam-select2-assign.required' => 'At least one engineering team must be assigned.',
+                'edit-engteam-select2-assign.min' => 'At least one engineering team must be assigned.',
             ]
         );
         if ($validator->fails()) {
