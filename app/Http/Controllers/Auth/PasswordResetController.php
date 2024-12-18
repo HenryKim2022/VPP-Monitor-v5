@@ -51,13 +51,11 @@ class PasswordResetController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'user-email'  => [
-                    'required',
-                    'email'
-                ],
+                'user-email' => 'required|email', // Simplified validation rule
             ],
             [
-                'user-email.required'  => 'The name field is required.',
+                'user-email.required' => 'The email field is required.',
+                'user-email.email' => 'The email must be a valid email address.',
             ]
         );
         if ($validator->fails()) {
@@ -71,8 +69,9 @@ class PasswordResetController extends Controller
             ->whereNull('deleted_at')
             ->first();
         if (!$user) {
-            Session::flash('n_errors', ['Email or user not registered!']);
-            return redirect()->back();
+            Session::flash('n_errors', ['Email not registered!']);
+            $data = ['site_name' => env(key: 'APP_NAME'),];
+            return $this->setReturnView('pages/auths/p_reset', $data);
         }
 
         $token = Str::random(60);
@@ -103,7 +102,7 @@ class PasswordResetController extends Controller
             // Validate the token
             $passwordResetToken = PasswordResetToken_Model::where('token', $token)->first();
             if (!$passwordResetToken) {
-                Session::flash('n_errors', ['[Err: 001] Invalid or expired token!']);
+                Session::flash('n_errors', ['Err: [001] Invalid or expired token!']);
                 return redirect()->route('reset.page'); // Redirect to the reset page
             }
 
@@ -168,7 +167,7 @@ class PasswordResetController extends Controller
         // dd($passwordResetToken);
 
         if (!$passwordResetToken) {
-            Session::flash('n_errors', ['[Err: 002] Invalid token!']);
+            Session::flash('n_errors', ['Err: [002] Invalid token!']);
             return redirect()->back();
         }
 

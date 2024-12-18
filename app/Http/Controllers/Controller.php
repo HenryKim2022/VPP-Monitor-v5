@@ -74,13 +74,13 @@ abstract class Controller
         ////// /usr/local/bin/ea-php82 /home/itir9421/public_html/vppm.iti-if.my.id/artisan schedule:run >> /home/itir9421/cron.log 2>&1
 
         try {
-            // CheckExpiredWorksheetsJob::dispatch();   // Dispatch to queue schedule
+            CheckExpiredWorksheetsJob::dispatch();   // Dispatch to queue schedule
             // $job = new CheckExpiredWorksheetsJob();
             // $job->handle();
 
             // Dispatch the job to run immediately
-            ManualCheckExpiredWorksheetsJob::dispatch();
-            Log::info('Job dispatched successfully.');
+            // ManualCheckExpiredWorksheetsJob::dispatch();
+            // Log::info('Job dispatched successfully.');
             return response()->json(['message' => 'Job dispatched.']);
         } catch (\Exception $e) {
             Log::error('Failed to dispatch job: ' . $e->getMessage());
