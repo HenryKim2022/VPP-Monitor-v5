@@ -474,7 +474,7 @@
                                             {{ $project->na_project ?: '-' }}</td>
                                         <td class="txt-wrap {{ $isCondFullfilled ? 'text-white' : '' }}">
                                             {{ $project->client !== null ? $project->client->na_client : '-' }}</td>
-                                        <td class="{{ $isCondFullfilled ? 'text-white' : '' }}text-center align-middle">
+                                        <td class="{{ $isCondFullfilled ? 'text-white' : '' }} text-center align-middle">
                                             @php
                                                 $coordinatorNames = [];
                                                 foreach ($project->coordinators as $index => $co) {

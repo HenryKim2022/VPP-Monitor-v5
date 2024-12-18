@@ -2644,7 +2644,7 @@
                                             ' .info-prj-text');
                                         if (infoText) {
                                             infoText.innerHTML =
-                                                `Are you sure you want to <a class="text-warning">Lock the project with ID ${response.project_id}? Please confirm by clicking "<a class="text-danger">LOCK</a>" below.`; // Update with your desired content
+                                                `Are you sure you want to <a class="text-warning">Lock the project with ID ${response.project_id}?</a> Please confirm by clicking "<a class="text-danger">LOCK</a>" below.`; // Update with your desired content
                                         } else {
                                             console.error(
                                                 "infoText element not found in the specified modal:",
@@ -2706,7 +2706,7 @@
                                             ' .info-prj-text');
                                         if (infoText2) {
                                             infoText2.innerHTML =
-                                                `Are you sure you want to <a class="text-warning">Unlock the project with ID ${response.project_id}?</a> This action <a class="text-danger">cannot be undone</a>. Please confirm by clicking "<a class="text-danger">UNLOCK</a>" below.`; // Update with your desired content
+                                                `Are you sure you want to <a class="text-warning">Unlock the project with ID ${response.project_id}?</a> Please confirm by clicking "<a class="text-danger">UNLOCK</a>" below.`; // Update with your desired content
                                         } else {
                                             console.error(
                                                 "infoText element not found in the specified modal:",
