@@ -221,6 +221,35 @@
                             aria-labelledby="pm-pill-general" aria-expanded="false">
 
                             <div class="row match-height">
+
+ <!-- FLOATING BUTTTON: SIMPLE -->
+ <!-- Floating Button -->
+ <div class="left-floating-container">
+    <div class="d-flex flex-row justify-content-between align-items-center">
+
+        @if ($authUserType == 'Superuser' || $authUserType == 'Supervisor')
+            <div class="d-flex gap-3">
+                <div class="nav-item">
+                    <button
+                    {{-- onclick="openModal('{{ $modalData['modal_add'] }}')" --}}
+                        class="btn btn-success px-1 dropdown-item d-flex align-items-center border border-success add-new-record"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="Add New Record!">
+                        <span><i class="fas fa-plus-circle fa-xs text-white"></i></span>
+                    </button>
+                </div>
+
+            </div>
+        @endif
+        <!-- OTHER ITEM EXAMPLE -->
+        {{-- <button class="btn bg-primary btn-icon auth-role-lock-text {{ $blinkClass }}" type="button">
+        <i class="fas fa-engine-warning fa-xs"></i>
+        </button> --}}
+    </div>
+</div>
+
+
+
+
                                 <!-- Left Card 1st -->
                                 <div class="col-xl-12 col-md-12 col-12 d-flex align-items-center logo_eng_text px-0">
                                     <div class="card mb-0 w-100">
@@ -1515,17 +1544,21 @@
                                                             class="text-center align-middle text-nowrap {{ $isExpired ? 'text-white' : '' }}">
                                                             @php
                                                                 $ws_status = $ws->status_ws;
-                                                                $blinkClass =
-                                                                    $ws_status == 'OPEN' ? 'blink-bg' : '';
-                                                                $expiredDT = $authUserType != 'Client' ? ($ws->expired_at_ws ? convertDateTime($ws->expired_at_ws, 'en') : null) : null;
+                                                                $blinkClass = $ws_status == 'OPEN' ? 'blink-bg' : '';
+                                                                $expiredDT =
+                                                                    $authUserType != 'Client'
+                                                                        ? ($ws->expired_at_ws
+                                                                            ? convertDateTime($ws->expired_at_ws, 'en')
+                                                                            : null)
+                                                                        : null;
                                                             @endphp
                                                             @if ($authUserType == 'Superuser')
                                                                 @if ($isStatusOpen)
                                                                     @if (isset($modalData['modal_lock']))
-                                                                        <button
-                                                                            data-toggle="tooltip" data-popup="tooltip-custom"
+                                                                        <button data-toggle="tooltip"
+                                                                            data-popup="tooltip-custom"
                                                                             data-placement="bottom"
-                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT  : '' }}"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT : '' }}"
                                                                             data-html="true"
                                                                             class="lock-ws-cmd btn rounded small text-white {{ $blinkClass }}"
                                                                             lock_ws_id_value = "{{ $ws->id_ws ?: 0 }}"
@@ -1536,10 +1569,10 @@
                                                                     @endif
                                                                 @else
                                                                     @if (isset($modalData['modal_unlock']))
-                                                                        <button
-                                                                            data-toggle="tooltip" data-popup="tooltip-custom"
+                                                                        <button data-toggle="tooltip"
+                                                                            data-popup="tooltip-custom"
                                                                             data-placement="bottom"
-                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT  : '' }}"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT : '' }}"
                                                                             data-html="true"
                                                                             class="unlock-ws-cmd btn bg-success rounded small text-white"
                                                                             unlock_ws_id_value = "{{ $ws->id_ws ?: 0 }}"
@@ -1559,10 +1592,10 @@
                                                                 @if ($ws->status_ws == 'OPEN')
                                                                     <div
                                                                         class="row g-2 needs-validation d-flex justify-content-center">
-                                                                        <button
-                                                                            data-toggle="tooltip" data-popup="tooltip-custom"
+                                                                        <button data-toggle="tooltip"
+                                                                            data-popup="tooltip-custom"
                                                                             data-placement="bottom"
-                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT  : '' }}"
+                                                                            data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT : '' }}"
                                                                             data-html="true"
                                                                             class="btn rounded small text-white {{ $blinkClass }}"
                                                                             style="padding: 0.4rem">
@@ -1570,10 +1603,9 @@
                                                                         </button>
                                                                     </div>
                                                                 @else
-                                                                    <div
-                                                                        data-toggle="tooltip" data-popup="tooltip-custom"
+                                                                    <div data-toggle="tooltip" data-popup="tooltip-custom"
                                                                         data-placement="bottom"
-                                                                        data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT  : '' }}"
+                                                                        data-original-title="Expired at:<br>{{ $expiredDT ? $expiredDT : '' }}"
                                                                         data-html="true"
                                                                         class="row g-2 needs-validation d-flex justify-content-center">
                                                                         <button
@@ -2089,94 +2121,6 @@
             @if ($isProjectOpen)
                 @if ($authUserType != 'Client' && $authUserType != 'Engineer')
                     <script>
-                        // document.addEventListener('DOMContentLoaded', function() {
-                        //     var drake = dragula([document.getElementById('draggable-table')], {
-                        //         moves: function(el, container, handle) {
-                        //             return handle.classList.contains('dragable-handle');
-                        //         }
-                        //     });
-
-                        //     let selectedRow = null;
-                        //     // Select all rows and add event listeners to all handles
-                        //     const rows = document.querySelectorAll('#draggable-table tr');
-                        //     rows.forEach(row => {
-                        //         const handles = row.querySelectorAll('.dragable-handle'); // Select all handles in the row
-                        //         handles.forEach(handle => {
-                        //             // Add click event listener to each handle
-                        //             handle.addEventListener('click', function(e) {
-                        //                 handleRowClick(e, row);
-                        //             });
-
-                        //             // Add touchend event listener to each handle
-                        //             handle.addEventListener('touchend', function(e) {
-                        //                 e.preventDefault(); // Prevent default behavior
-                        //                 handleRowClick(e, row);
-                        //             });
-                        //         });
-                        //     });
-
-                        //     function handleRowClick(e, row) {
-                        //         console.log('Row clicked:', row);
-                        //         if (!selectedRow) {
-                        //             selectedRow = row;
-                        //             selectedRow.classList.add('selected4drag-start'); // Add the class when selecting
-                        //             console.log('Selected row to move:', selectedRow);
-                        //         } else {
-                        //             const targetRow = e.currentTarget.closest('tr');
-                        //             if (targetRow && targetRow !== selectedRow) {
-                        //                 const parent = selectedRow.parentNode;
-                        //                 parent.insertBefore(selectedRow, targetRow.nextSibling);
-                        //                 updateOrder();
-                        //                 console.log('Moved row after target:', targetRow);
-                        //             }
-                        //             selectedRow.classList.remove('selected4drag-start'); // Remove the start class
-                        //             selectedRow.classList.add(
-                        //                 'selected4drag-end'); // Add a different class to indicate the end of selection
-                        //             selectedRow = null; // Reset selectedRow
-                        //         }
-                        //     }
-
-                        //     function updateOrder() {
-                        //         var order = [];
-                        //         var rows = document.querySelectorAll('#draggable-table tr');
-                        //         rows.forEach(function(row, index) {
-                        //             order.push({
-                        //                 id: row.dataset.id,
-                        //                 order: index + 1
-                        //             });
-                        //         });
-                        //         fetch('{{ route('m.mon.dws.uor') }}', {
-                        //                 method: 'POST',
-                        //                 headers: {
-                        //                     'Content-Type': 'application/json',
-                        //                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        //                 },
-                        //                 body: JSON.stringify(order)
-                        //             })
-                        //             .then(response => response.json())
-                        //             .then(data => {
-                        //                 if (data.message) {
-                        //                     jsonToastReceiver(data.message);
-                        //                 }
-                        //                 console.log('Order updated:', data);
-                        //             })
-                        //             .catch((error) => {
-                        //                 if (error.message) {
-                        //                     jsonToastReceiver(error.message);
-                        //                 }
-                        //                 console.error('Error:', error);
-                        //             });
-                        //     }
-
-                        //     drake.on('drop', function(el, target, source, sibling) {
-                        //         updateOrder();
-                        //     });
-                        // });
-
-
-
-
-
                         document.addEventListener('DOMContentLoaded', function() {
                             var drake = dragula([document.getElementById('draggable-table')], {
                                 moves: function(el, container, handle) {
@@ -2220,20 +2164,53 @@
                                     }
                                     selectedRow.classList.remove('selected4drag-start'); // Remove the start class
                                     selectedRow.classList.add(
-                                    'selected4drag-end'); // Add a different class to indicate the end of selection
+                                        'selected4drag-end'); // Add a different class to indicate the end of selection
                                     setTimeout(() => {
                                         // Select all rows and remove the classes
                                         const allRows = document.querySelectorAll('#draggable-table tr');
                                         allRows.forEach(row => {
                                             row.classList.remove('selected4drag-end'); // Remove the end class
                                             row.classList.remove(
-                                            'selected4drag-start'); // Remove the start class if needed
+                                                'selected4drag-start'); // Remove the start class if needed
                                         });
                                     }, 3000);
 
                                     selectedRow = null; // Reset selectedRow
                                 }
                             }
+
+                            // function updateOrder() {
+                            //     var order = [];
+                            //     var rows = document.querySelectorAll('#draggable-table tr');
+                            //     rows.forEach(function(row, index) {
+                            //         order.push({
+                            //             id: row.dataset.id,
+                            //             order: index + 1
+                            //         });
+                            //     });
+                            //     fetch('{{ route('m.mon.dws.uor') }}', {
+                            //             method: 'POST',
+                            //             headers: {
+                            //                 'Content-Type': 'application/json',
+                            //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            //             },
+                            //             body: JSON.stringify(order)
+                            //         })
+                            //         .then(response => response.json())
+                            //         .then(data => {
+                            //             if (data.message) {
+                            //                 jsonToastReceiver(data.message);
+                            //             }
+                            //             console.log('Order updated:', data);
+                            //         })
+                            //         .catch((error) => {
+                            //             if (error.message) {
+                            //                 jsonToastReceiver(error.message);
+                            //             }
+                            //             console.error('Error:', error);
+                            //         });
+                            // }
+
 
                             function updateOrder() {
                                 var order = [];
@@ -2244,15 +2221,13 @@
                                         order: index + 1
                                     });
                                 });
-                                fetch('{{ route('m.mon.dws.uor') }}', {
+                                makeRequest('{{ route('m.mon.dws.uor') }}', {
                                         method: 'POST',
                                         headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            'Content-Type': 'application/json'
                                         },
                                         body: JSON.stringify(order)
                                     })
-                                    .then(response => response.json())
                                     .then(data => {
                                         if (data.message) {
                                             jsonToastReceiver(data.message);
@@ -2267,6 +2242,7 @@
                                     });
                             }
 
+
                             drake.on('drop', function(el, target, source, sibling) {
                                 updateOrder();
                                 if (selectedRow) {
@@ -2279,9 +2255,9 @@
                                         const allRows = document.querySelectorAll('#draggable-table tr');
                                         allRows.forEach(row => {
                                             row.classList.remove(
-                                            'selected4drag-end'); // Remove the end class
+                                                'selected4drag-end'); // Remove the end class
                                             row.classList.remove(
-                                            'selected4drag-start'); // Remove the start class if needed
+                                                'selected4drag-start'); // Remove the start class if needed
                                         });
                                     }, 3000);
 
@@ -2292,7 +2268,7 @@
                             drake.on('cancel', function(el) {
                                 if (selectedRow) {
                                     selectedRow.classList.remove(
-                                    'selected4drag-start'); // Remove the start class if drag is canceled
+                                        'selected4drag-start'); // Remove the start class if drag is canceled
                                     selectedRow = null; // Reset selectedRow
                                 }
                             });

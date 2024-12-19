@@ -399,32 +399,59 @@
                 var karyawanID = $(this).attr('karyawan_id_value');
                 // console.log('Edit button clicked for team_id:', timID);
 
+                // setTimeout(() => {
+                //     $.ajax({
+                //         url: '{{ route('m.emp.teams.getteam') }}',
+                //         method: 'POST',
+                //         headers: {
+                //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                //         },
+                //         data: {
+                //             timID: timID,
+                //             // karyawanID: karyawanID
+                //         },
+                //         success: function(response) {
+                //             console.log(response);
+                //             $('#team_id').val(response.id_team);
+                //             // $('#karyawan_id').val(response.id_karyawan);
+                //             $('#team_name').val(response.na_team);
+
+                //             // console.log('SHOWING MODAL');
+                //             document.body.style.overflowY = 'hidden';
+                //             modalToShow.show();
+                //         },
+                //         error: function(error) {
+                //             console.log("Err [JS]:\n");
+                //             console.log(error);
+                //         }
+                //     });
+                // }); // <-- Closing parenthesis for setTimeout
+
                 setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.emp.teams.getteam') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            timID: timID,
-                            // karyawanID: karyawanID
-                        },
-                        success: function(response) {
+                    makeRequest('{{ route('m.emp.teams.getteam') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                timID: timID,
+                                // karyawanID: karyawanID // Uncomment if needed
+                            })
+                        })
+                        .then(response => {
                             console.log(response);
                             $('#team_id').val(response.id_team);
-                            // $('#karyawan_id').val(response.id_karyawan);
+                            // $('#karyawan_id').val(response.id_karyawan); // Uncomment if needed
                             $('#team_name').val(response.na_team);
 
                             // console.log('SHOWING MODAL');
                             document.body.style.overflowY = 'hidden';
                             modalToShow.show();
-                        },
-                        error: function(error) {
+                        })
+                        .catch(error => {
                             console.log("Err [JS]:\n");
                             console.log(error);
-                        }
-                    });
+                        });
                 }); // <-- Closing parenthesis for setTimeout
             });
 
@@ -454,16 +481,29 @@
             let employeelists = [];
             let teamAssignments = {}; // Object to store assignments
 
+            // // Fetch employee data first
+            // $.ajax({
+            //     url: '{{ route('m.emp.teams.load.emplists') }}',
+            //     type: 'GET',
+            //     success: function(data) {
+            //         employeelists = data.employeelists; // Store the employee list
+            //         initializeDataTable(); // Initialize DataTable after fetching employees
+            //         startPolling(); // Start polling for database updates
+            //     }
+            // });
+
             // Fetch employee data first
-            $.ajax({
-                url: '{{ route('m.emp.teams.load.emplists') }}',
-                type: 'GET',
-                success: function(data) {
+            makeRequest('{{ route('m.emp.teams.load.emplists') }}', {
+                    method: 'GET'
+                })
+                .then(data => {
                     employeelists = data.employeelists; // Store the employee list
                     initializeDataTable(); // Initialize DataTable after fetching employees
                     startPolling(); // Start polling for database updates
-                }
-            });
+                })
+                .catch(error => {
+                    console.error('Error fetching employee data:', error);
+                });
 
             // Call this function after your table is rendered or updated
             function initializeFeatherIcons() {
@@ -678,16 +718,43 @@
                             teamAssignments[teamId] = [];
                         }
 
-                        // Send AJAX request to update the database
-                        $.ajax({
-                            url: '{{ route('m.emp.teams.unassign') }}',
-                            type: 'POST',
-                            data: {
-                                employee_id: employeeId,
-                                team_id: teamId,
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
+                        // // Send AJAX request to update the database
+                        // $.ajax({
+                        //     url: '{{ route('m.emp.teams.unassign') }}',
+                        //     type: 'POST',
+                        //     data: {
+                        //         employee_id: employeeId,
+                        //         team_id: teamId,
+                        //         _token: '{{ csrf_token() }}'
+                        //     },
+                        //     success: function(response) {
+                        //         console.log(response.message);
+                        //         if (response.message) {
+                        //             jsonToastReceiver(response.message);
+                        //         }
+
+                        //         // Enable the option in other teams
+                        //         enableOptionInOtherTeams(employeeId, teamId);
+                        //     },
+                        //     error: function(xhr) {
+                        //         console.error(xhr.responseText);
+                        //     }
+                        // });
+
+
+                        // Send request to update the database
+                        makeRequest('{{ route('m.emp.teams.unassign') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    employee_id: employeeId,
+                                    team_id: teamId,
+                                    _token: '{{ csrf_token() }}' // This can be omitted if CSRF token is managed globally
+                                })
+                            })
+                            .then(response => {
                                 console.log(response.message);
                                 if (response.message) {
                                     jsonToastReceiver(response.message);
@@ -695,11 +762,12 @@
 
                                 // Enable the option in other teams
                                 enableOptionInOtherTeams(employeeId, teamId);
-                            },
-                            error: function(xhr) {
-                                console.error(xhr.responseText);
-                            }
-                        });
+                            })
+                            .catch(error => {
+                                console.error('Error unassigning employee:', error);
+                            });
+
+
                     }).on("select2:select", function(e) {
                         let employeeId = e.params.data.id;
                         let teamId = $(this).closest('tr').find('.edit-record').attr(
@@ -711,30 +779,59 @@
                         }
                         teamAssignments[teamId].push(employeeId);
 
-                        // Send AJAX request to update the database
-                        $.ajax({
-                            url: '{{ route('m.emp.teams.assign') }}',
-                            type: 'POST',
-                            data: {
-                                employee_id: employeeId,
-                                team_id: teamId,
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
+                        // // Send AJAX request to update the database
+                        // $.ajax({
+                        //     url: '{{ route('m.emp.teams.assign') }}',
+                        //     type: 'POST',
+                        //     data: {
+                        //         employee_id: employeeId,
+                        //         team_id: teamId,
+                        //         _token: '{{ csrf_token() }}'
+                        //     },
+                        //     success: function(response) {
+                        //         console.log(response.message);
+                        //         if (response.message) {
+                        //             jsonToastReceiver(response
+                        //                 .message
+                        //             ); // Pass response.message instead of response
+                        //         }
+
+                        //         // Disable the option in other teams
+                        //         disableOptionInOtherTeams(employeeId, teamId);
+                        //     },
+                        //     error: function(xhr) {
+                        //         console.error(xhr.responseText);
+                        //     }
+                        // });
+
+
+                        // Send request to update the database
+                        makeRequest('{{ route('m.emp.teams.assign') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    employee_id: employeeId,
+                                    team_id: teamId,
+                                    _token: '{{ csrf_token() }}' // This can be omitted if CSRF token is managed globally
+                                })
+                            })
+                            .then(response => {
                                 console.log(response.message);
                                 if (response.message) {
                                     jsonToastReceiver(response
-                                        .message
-                                    ); // Pass response.message instead of response
+                                        .message); // Pass response.message instead of response
                                 }
 
                                 // Disable the option in other teams
                                 disableOptionInOtherTeams(employeeId, teamId);
-                            },
-                            error: function(xhr) {
-                                console.error(xhr.responseText);
-                            }
-                        });
+                            })
+                            .catch(error => {
+                                console.error('Error assigning employee:', error);
+                            });
+
+
                     }).on("select2:open", function() {
                         if (currentOpenSelect2 && currentOpenSelect2 !== this) {
                             $(currentOpenSelect2).select2(
@@ -783,17 +880,68 @@
 
             // Check for updates in the database
             function checkForUpdates() {
-                $.ajax({
-                    url: '{{ route('m.emp.teams.detect.chg', ['modelType' => 'employee']) }}',
-                    type: 'GET',
-                    success: function(data) {
+                // $.ajax({
+                //     url: '{{ route('m.emp.teams.detect.chg', ['modelType' => 'employee']) }}',
+                //     type: 'GET',
+                //     success: function(data) {
+                //         if (data.last_updated) {
+                //             var newLastUpdatedAt = new Date(data.last_updated); // This is in UTC
+                //             console.log('Old Last Updated At:', lastUpdatedAt);
+                //             console.log('New Last Updated At:', newLastUpdatedAt);
+
+                //             var oldLastUpdatedAt = lastUpdatedAt ? new Date(lastUpdatedAt) :
+                //                 null; // This is in UTC
+
+                //             // Log the comparison for debugging
+                //             console.log('Comparing timestamps:');
+                //             console.log('oldLastUpdatedAt (UTC):', oldLastUpdatedAt);
+                //             console.log('newLastUpdatedAt (UTC):', newLastUpdatedAt);
+
+                //             // Compare both timestamps in UTC
+                //             if (!oldLastUpdatedAt || newLastUpdatedAt > oldLastUpdatedAt) {
+                //                 lastUpdatedAt = newLastUpdatedAt
+                //                     .toISOString(); // Update the last updated timestamp
+                //                 console.log("AF Updated Last Updated At:",
+                //                     lastUpdatedAt); // Log the updated timestamp
+                //                 console.log("DETECTED NEW DATA"); // This logs when new data is detected
+
+                //                 // Update employeelists and teamAssignments with the latest data
+                //                 employeelists = data.employeelists; // Update employeelists
+                //                 updateTeamAssignments(data.teamlists); // Update team assignments
+
+                //                 // Reload the DataTable only if not currently updating
+                //                 if (!isUpdating) {
+                //                     isUpdating = true; // Set the flag to prevent immediate updates
+                //                     setTimeout(function() {
+                //                         $('#daftarTeamTable').DataTable().ajax.reload(null,
+                //                             false);
+                //                         isUpdating = false; // Reset the flag after reload
+                //                     }, 1000); // Delay to allow user to make multiple selections
+                //                 }
+                //             } else {
+                //                 console.log("No new data detected (timestamp unchanged).");
+                //             }
+                //         }
+                //     },
+                //     error: function(xhr, status, error) {
+                //         console.log('Polling Error:', xhr.responseText);
+                //         console.log('Status:', status);
+                //         console.log('Error:', error);
+                //     }
+                // });
+
+
+                makeRequest('{{ route('m.emp.teams.detect.chg', ['modelType' => 'employee']) }}', {
+                        method: 'GET'
+                    })
+                    .then(data => {
                         if (data.last_updated) {
                             var newLastUpdatedAt = new Date(data.last_updated); // This is in UTC
                             console.log('Old Last Updated At:', lastUpdatedAt);
                             console.log('New Last Updated At:', newLastUpdatedAt);
 
                             var oldLastUpdatedAt = lastUpdatedAt ? new Date(lastUpdatedAt) :
-                                null; // This is in UTC
+                            null; // This is in UTC
 
                             // Log the comparison for debugging
                             console.log('Comparing timestamps:');
@@ -803,9 +951,9 @@
                             // Compare both timestamps in UTC
                             if (!oldLastUpdatedAt || newLastUpdatedAt > oldLastUpdatedAt) {
                                 lastUpdatedAt = newLastUpdatedAt
-                                    .toISOString(); // Update the last updated timestamp
+                            .toISOString(); // Update the last updated timestamp
                                 console.log("AF Updated Last Updated At:",
-                                    lastUpdatedAt); // Log the updated timestamp
+                                lastUpdatedAt); // Log the updated timestamp
                                 console.log("DETECTED NEW DATA"); // This logs when new data is detected
 
                                 // Update employeelists and teamAssignments with the latest data
@@ -816,8 +964,7 @@
                                 if (!isUpdating) {
                                     isUpdating = true; // Set the flag to prevent immediate updates
                                     setTimeout(function() {
-                                        $('#daftarTeamTable').DataTable().ajax.reload(null,
-                                            false);
+                                        $('#daftarTeamTable').DataTable().ajax.reload(null, false);
                                         isUpdating = false; // Reset the flag after reload
                                     }, 1000); // Delay to allow user to make multiple selections
                                 }
@@ -825,13 +972,10 @@
                                 console.log("No new data detected (timestamp unchanged).");
                             }
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Polling Error:', xhr.responseText);
-                        console.log('Status:', status);
-                        console.log('Error:', error);
-                    }
-                });
+                    })
+                    .catch(error => {
+                        console.log('Polling Error:', error);
+                    });
             }
 
             // Function to update teamAssignments based on the new teamlists

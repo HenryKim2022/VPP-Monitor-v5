@@ -681,5 +681,4 @@
 </script>
 <!-- ./Custom Remember TAB Active & Keep active during style change -->
 
-
-
+<!-- BEGIN: CSRF Auto Regen --> @include('v_res.csrf_regen.v_csrf_regen') <!-- END: CSRF Auto Regen -->

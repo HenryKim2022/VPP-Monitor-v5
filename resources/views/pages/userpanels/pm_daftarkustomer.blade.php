@@ -164,12 +164,12 @@
                                                     Edit
                                                 </a>
                                                 @if ($authUserType === 'Superuser')
-                                                <a class="delete-record dropdown-item d-flex align-items-center"
-                                                    del_client_id_value = "{{ $client->id_client ?: 0 }}"
-                                                    onclick="openModal('{{ $modalData['modal_delete'] }}')">
-                                                    <i data-feather="trash" class="mr-1" style="color: #ea5455;"></i>
-                                                    Delete
-                                                </a>
+                                                    <a class="delete-record dropdown-item d-flex align-items-center"
+                                                        del_client_id_value = "{{ $client->id_client ?: 0 }}"
+                                                        onclick="openModal('{{ $modalData['modal_delete'] }}')">
+                                                        <i data-feather="trash" class="mr-1" style="color: #ea5455;"></i>
+                                                        Delete
+                                                    </a>
                                                 @endif
                                             </div>
                                             <!--/ dropdown menu -->
@@ -280,7 +280,7 @@
                     lengthMenu: 'Display _MENU_ records per page',
                     info: 'Showing page _PAGE_ of _PAGES_',
                     search: 'Search',
-                                        // paginate: {
+                    // paginate: {
                     //     first: 'First',
                     //     last: 'Last',
                     //     next: '&rarr;',
@@ -386,17 +386,46 @@
             $(document).on('click', '.edit-record', function(event) {
                 var clientID = $(this).attr('edit_client_id_value');
                 // console.log('Edit button clicked for client_id:', clientID);
+                // setTimeout(() => {
+                //     $.ajax({
+                //         url: '{{ route('m.cli.getcli') }}',
+                //         method: 'POST',
+                //         headers: {
+                //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                //         },
+                //         data: {
+                //             clientID: clientID
+                //         },
+                //         success: function(response) {
+                //             console.log(response);
+                //             $('#edit_cli_id').val(response.id_client);
+                //             $('#edit-cli-name').val(response.na_client);
+                //             $('#edit-cli-addr').val(response.addr_client);
+                //             $('#edit-cli-telp').val(response.telp_client);
+
+                //             setAvatar(response);
+                //             // console.log('SHOWING MODAL');
+                //             document.body.style.overflowY = 'hidden';
+                //             modalToShow.show();
+                //         },
+                //         error: function(error) {
+                //             console.log("Err [JS]:\n");
+                //             console.log(error);
+                //         }
+                //     });
+                // }); // <-- Closing parenthesis for setTimeout
+
                 setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.cli.getcli') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            clientID: clientID
-                        },
-                        success: function(response) {
+                    makeRequest('{{ route('m.cli.getcli') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                clientID: clientID
+                            })
+                        })
+                        .then(response => {
                             console.log(response);
                             $('#edit_cli_id').val(response.id_client);
                             $('#edit-cli-name').val(response.na_client);
@@ -405,14 +434,13 @@
 
                             setAvatar(response);
                             // console.log('SHOWING MODAL');
-document.body.style.overflowY = 'hidden';
+                            document.body.style.overflowY = 'hidden';
                             modalToShow.show();
-                        },
-                        error: function(error) {
+                        })
+                        .catch(error => {
                             console.log("Err [JS]:\n");
                             console.log(error);
-                        }
-                    });
+                        });
                 }); // <-- Closing parenthesis for setTimeout
             });
 
@@ -485,7 +513,7 @@ document.body.style.overflowY = 'hidden';
             $('.dropdown-menu').on('click', '.delete-record', function(event) {
                 var clientID = $(this).attr('del_client_id_value');
                 $('#' + whichModal + ' #del_client_id').val(clientID);
-                 document.body.style.overflowY = 'hidden';
+                document.body.style.overflowY = 'hidden';
                 modalToShow.show();
             });
 

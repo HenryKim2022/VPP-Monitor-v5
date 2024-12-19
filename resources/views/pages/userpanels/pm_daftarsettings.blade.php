@@ -124,26 +124,50 @@
 
                 // Check if the setting name is one of the specific settings
                 if (settingName === 'client_reg_menu' || settingName === 'employee_reg_menu') {
-                    $.ajax({
-                        url: '{{ route('m.sys.sh.chg.valreg') }}',
+                    // $.ajax({
+                    //     url: '{{ route('m.sys.sh.chg.valreg') }}',
+                    //     method: 'POST',
+                    //     data: {
+                    //         setting_name: settingName,
+                    //         setting_value: settingValue,
+                    //         _token: '{{ csrf_token() }}' // CSRF token for security
+                    //     },
+                    //     success: function(response) {
+                    //         if (response != null && response.message) {
+                    //             jsonToastReceiver(response.message); // Display success message
+                    //         }
+                    //         console.log('Update successful:', response);
+                    //     },
+                    //     error: function(xhr, status, error) {
+                    //         if (xhr.responseJSON != null && xhr.responseJSON.message) {
+                    //             jsonToastReceiver(xhr.responseJSON
+                    //             .message); // Display error message
+                    //         }
+                    //         console.error('Update failed:', error);
+                    //     }
+                    // });
+
+                    makeRequest('{{ route('m.sys.sh.chg.valreg') }}', {
                         method: 'POST',
-                        data: {
+                        body: JSON.stringify({
                             setting_name: settingName,
-                            setting_value: settingValue,
-                            _token: '{{ csrf_token() }}' // CSRF token for security
-                        },
-                        success: function(response) {
-                            if (response != null && response.message) {
-                                jsonToastReceiver(response.message); // Display success message
-                            }
-                            console.log('Update successful:', response);
-                        },
-                        error: function(xhr, status, error) {
-                            if (xhr.responseJSON != null && xhr.responseJSON.message) {
-                                jsonToastReceiver(xhr.responseJSON
-                                .message); // Display error message
-                            }
-                            console.error('Update failed:', error);
+                            setting_value: settingValue
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response != null && response.message) {
+                            jsonToastReceiver(response.message); // Display success message
+                        }
+                        console.log('Update successful:', response);
+                    })
+                    .catch(error => {
+                        console.error('Update failed:', error);
+                        // Handle error response
+                        if (error.message) {
+                            jsonToastReceiver(error.message); // Display error message
                         }
                     });
                 }

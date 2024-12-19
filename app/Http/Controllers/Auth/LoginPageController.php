@@ -71,6 +71,8 @@ class LoginPageController extends Controller
 
     public function doLogin(Request $request)
     {
+        $authUserType = auth()->user()->type ?? null;
+
         // Define an array of allowed local addresses and IP ranges
         $disableCapthaOnBaseUrl = [
             // 'localhost',
@@ -175,13 +177,15 @@ class LoginPageController extends Controller
                 Session::put('authenticated_user_data', $authenticated_user_data);
             }
 
-            if ($user->type === 'Superuser') {
-                return redirect()->route('userPanels.projects'); // Redirect to admin dashboard
-            } elseif ($user->type === "karyawan") {
-                return redirect()->route('userPanels.projects'); // Redirect to karyawan dashboard
-            } else {
-                return redirect()->route('login.page'); // Redirect to login page
-            }
+            return redirect()->route('userPanels.projects'); // Redirect to admin dashboard
+            // if ($authUserType === 'Superuser') {
+            //     return redirect()->route('userPanels.projects'); // Redirect to admin dashboard
+            // } elseif ($authUserType === "Supervisor" || $authUserType === 'Engineer' || $authUserType === 'Client') {
+            //     return redirect()->route('userPanels.projects'); // Redirect to karyawan dashboard
+            // } else {
+            //     // Session::flash('n_errors', ['Ups sorry, Illegal access is\'nt allowed!']);
+            //     return redirect()->route('login.page'); // Redirect to login page
+            // }
         } else {
             // Authentication failed
             Session::flash('n_errors', ['Invalid credentials!']);

@@ -1563,46 +1563,85 @@
                 var taskID = $(this).attr('edit_task_id_value');
                 var projectID = $(this).attr('edit_project_id_value');
                 // console.log('Edit button clicked for task_id:', taskID);
+                // setTimeout(() => {
+                //     $.ajax({
+                //         url: '{{ route('m.task.gettask') }}',
+                //         method: 'POST',
+                //         headers: {
+                //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                //         },
+                //         data: {
+                //             taskID: taskID,
+                //             projectID: projectID
+                //         },
+                //         success: function(response) {
+                //             console.log(response);
+                //             $('#edit-task_id').val(response.id_task);
+                //             // $('#edit-task_work_time').val(response.task_worktime);
+                //             // setTaskWorkTime(response);
+                //             $('#edit-task_description').val(response.task_description);
+                //             $('#edit-task_current_progress').val(response
+                //                 .task_currentprogress);
+                //             $('#edit-ws_id_ws').val(response.id_ws);
+                //             $('#edit-ws_id_project').val(response.id_project);
+                //             $('#edit-ws_arrival_time').val(response.arrivalTime);
+                //             $('#edit-ws_finish_time').val(response.finishTime);
+
+
+                //             setDescbCharCount(response);
+                //             setTaskWorkTime(response);
+                //             setTask(response);
+
+
+                //             // console.log('SHOWING MODAL');
+                //             document.body.style.overflowY = 'hidden';
+                //             modalToShow.show();
+                //         },
+                //         error: function(error) {
+                //             console.log("Err [JS]:\n");
+                //             console.log(error);
+                //         }
+                //     });
+                // }); // <-- Closing parenthesis for setTimeout
+
+
                 setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.task.gettask') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            taskID: taskID,
-                            projectID: projectID
-                        },
-                        success: function(response) {
+                    makeRequest('{{ route('m.task.gettask') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                taskID: taskID,
+                                projectID: projectID
+                            })
+                        })
+                        .then(response => {
                             console.log(response);
                             $('#edit-task_id').val(response.id_task);
                             // $('#edit-task_work_time').val(response.task_worktime);
                             // setTaskWorkTime(response);
                             $('#edit-task_description').val(response.task_description);
-                            $('#edit-task_current_progress').val(response
-                                .task_currentprogress);
+                            $('#edit-task_current_progress').val(response.task_currentprogress);
                             $('#edit-ws_id_ws').val(response.id_ws);
                             $('#edit-ws_id_project').val(response.id_project);
                             $('#edit-ws_arrival_time').val(response.arrivalTime);
                             $('#edit-ws_finish_time').val(response.finishTime);
 
-
                             setDescbCharCount(response);
                             setTaskWorkTime(response);
                             setTask(response);
 
-
                             // console.log('SHOWING MODAL');
                             document.body.style.overflowY = 'hidden';
                             modalToShow.show();
-                        },
-                        error: function(error) {
+                        })
+                        .catch(error => {
                             console.log("Err [JS]:\n");
                             console.log(error);
-                        }
-                    });
+                        });
                 }); // <-- Closing parenthesis for setTimeout
+
             });
 
             function setDescbCharCount(response) {
@@ -1790,30 +1829,56 @@
 
                             console.log(wsId);
 
-                            $.ajax({
-                                url: '{{ route('m.ws.remark.edit') }}',
-                                type: 'POST',
-                                data: {
-                                    id_ws: wsId,
-                                    remarkText: remarkText,
-                                    _token: '{{ csrf_token() }}' // CSRF token for security
-                                },
-                                success: function(response) {
+                            // $.ajax({
+                            //     url: '{{ route('m.ws.remark.edit') }}',
+                            //     type: 'POST',
+                            //     data: {
+                            //         id_ws: wsId,
+                            //         remarkText: remarkText,
+                            //         _token: '{{ csrf_token() }}' // CSRF token for security
+                            //     },
+                            //     success: function(response) {
+                            //         if (response != null && response.message) {
+                            //             jsonToastReceiver(response
+                            //                 .message); // Pass response.message instead of response
+                            //         }
+
+                            //         console.log('Remark updated successfully:', response);
+                            //     },
+                            //     error: function(xhr, status, error) {
+                            //         if (xhr.responseJSON != null && xhr.responseJSON.message) {
+                            //             jsonToastReceiver(xhr.responseJSON
+                            //                 .message); // Pass response.message instead of response
+                            //         }
+                            //         console.error('Error updating remark:', error);
+                            //     }
+                            // });
+
+                            makeRequest('{{ route('m.ws.remark.edit') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        id_ws: wsId,
+                                        remarkText: remarkText,
+                                        _token: '{{ csrf_token() }}' // This can be omitted if CSRF token is managed globally
+                                    })
+                                })
+                                .then(response => {
                                     if (response != null && response.message) {
-                                        jsonToastReceiver(response
-                                            .message); // Pass response.message instead of response
+                                        jsonToastReceiver(response.message); // Pass response.message instead of response
                                     }
 
                                     console.log('Remark updated successfully:', response);
-                                },
-                                error: function(xhr, status, error) {
-                                    if (xhr.responseJSON != null && xhr.responseJSON.message) {
-                                        jsonToastReceiver(xhr.responseJSON
-                                            .message); // Pass response.message instead of response
+                                })
+                                .catch(error => {
+                                    if (error.responseJSON != null && error.responseJSON.message) {
+                                        jsonToastReceiver(error.responseJSON
+                                        .message); // Pass response.message instead of response
                                     }
                                     console.error('Error updating remark:', error);
-                                }
-                            });
+                                });
                         }
 
                         // Keydown event for Ctrl + Enter or Up Arrow + Enter

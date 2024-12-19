@@ -80,17 +80,26 @@ class PasswordResetController extends Controller
             'token' => $token,
         ]);
         $url = route('reset.form', ['token' => $token, 'email' => $userEmail]);
-        Mail::to($userEmail)->send(new PasswordResetEmail($url));
-
 
         $data = [
             'site_name' => env('APP_NAME'),
             'site_owner' => env('APP_OWNER'),
         ];
 
-        // return redirect()->back();
-        Session::flash('success', ['Reset link sent successfully!']);
-        return $this->setReturnView('pages/auths/p_reset_done_send', $data);
+        try {
+            Mail::to($userEmail)->send(new PasswordResetEmail($url));
+
+            Session::flash('success', ['A password reset link has been sent to your email address. Please check your spam or inbox!']);
+            return $this->setReturnView('pages/auths/p_reset_done_send', $data);
+        } catch (\Symfony\Component\Mailer\Exception\TransportException $e) {
+            Session::flash('n_errors', ['Error: Unable to connect to the email server. Please check env email configuration!']);
+            return redirect()->route('login.page');
+        } catch (\Exception $e) {
+            Session::flash('n_errors', ['Error: An unexpected error occurred. Please try again later!']);
+            return redirect()->route('reset.page');
+        }
+
+
     }
 
 

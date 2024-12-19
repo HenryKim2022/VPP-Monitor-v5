@@ -287,7 +287,7 @@
                     lengthMenu: 'Display _MENU_ records per page',
                     info: 'Showing page _PAGE_ of _PAGES_',
                     search: 'Search',
-                                        // paginate: {
+                    // paginate: {
                     //     first: 'First',
                     //     last: 'Last',
                     //     next: '&rarr;',
@@ -393,38 +393,71 @@
             $(document).on('click', '.edit-record', function(event) {
                 var karyawanID = $(this).attr('edit_karyawan_id_value');
                 // console.log('Edit button clicked for karyawan_id:', karyawanID);
+                // setTimeout(() => {
+                //     $.ajax({
+                //         url: '{{ route('m.emp.getemp') }}',
+                //         method: 'POST',
+                //         headers: {
+                //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                //         },
+                //         data: {
+                //             karyawanID: karyawanID
+                //         },
+                //         success: function(response) {
+                //             console.log(response);
+                //             $('#edit_karyawan_id').val(response.id_karyawan);
+                //             $('#edit-emp-name').val(response.na_karyawan);
+                //             $('#edit-emp-addr').val(response.addr_karyawan);
+                //             $('#edit-emp-telp').val(response.telp_karyawan);
+                //             $('#edit-emp-bday-place').val(response.bplace_karyawan);
+                //             // $('#edit-emp-birth-date').val(response.bdate_karyawan
+                //             //     .substr(0, 10));
+
+                //             setEmpBDayDate(response);
+                //             setAvatar(response);
+                //             setReligion(response);
+                //             // console.log('SHOWING MODAL');
+                //             document.body.style.overflowY = 'hidden';
+                //             modalToShow.show();
+                //         },
+                //         error: function(error) {
+                //             console.log("Err [JS]:\n");
+                //             console.log(error);
+                //         }
+                //     });
+                // }); // <-- Closing parenthesis for setTimeout
+
+                // Fetch employee details
                 setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.emp.getemp') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            karyawanID: karyawanID
-                        },
-                        success: function(response) {
+                    makeRequest('{{ route('m.emp.getemp') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                karyawanID: karyawanID
+                            })
+                        })
+                        .then(response => {
                             console.log(response);
                             $('#edit_karyawan_id').val(response.id_karyawan);
                             $('#edit-emp-name').val(response.na_karyawan);
                             $('#edit-emp-addr').val(response.addr_karyawan);
                             $('#edit-emp-telp').val(response.telp_karyawan);
                             $('#edit-emp-bday-place').val(response.bplace_karyawan);
-                            // $('#edit-emp-birth-date').val(response.bdate_karyawan
-                            //     .substr(0, 10));
+                            // $('#edit-emp-birth-date').val(response.bdate_karyawan.substr(0, 10));
 
                             setEmpBDayDate(response);
                             setAvatar(response);
                             setReligion(response);
-                            // console.log('SHOWING MODAL');
-document.body.style.overflowY = 'hidden';
+                            // Show the modal
+                            document.body.style.overflowY = 'hidden';
                             modalToShow.show();
-                        },
-                        error: function(error) {
+                        })
+                        .catch(error => {
                             console.log("Err [JS]:\n");
                             console.log(error);
-                        }
-                    });
+                        });
                 }); // <-- Closing parenthesis for setTimeout
             });
 
@@ -580,10 +613,10 @@ document.body.style.overflowY = 'hidden';
 
             setTimeout(() => {
                 $('table .dropdown-menu').on('click', '.delete-record', function(event) {
-                // $('.delete-record').on('click', function() {
+                    // $('.delete-record').on('click', function() {
                     var karyawanID = $(this).attr('del_karyawan_id_value');
                     $('#' + whichModal + ' #del_karyawan_id').val(karyawanID);
-                     document.body.style.overflowY = 'hidden';
+                    document.body.style.overflowY = 'hidden';
                     modalToShow.show();
                 });
             }, 800);

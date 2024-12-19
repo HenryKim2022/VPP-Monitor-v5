@@ -354,6 +354,34 @@
                                                         const uploadedAvatar = document.getElementById('account-upload-img');
                                                         const userId = '{{ $authenticated_user_data->id_karyawan }}';
 
+                                                        // uploadInput.addEventListener('change', function() {
+                                                        //     const file = uploadInput.files[0];
+                                                        //     const reader = new FileReader();
+
+                                                        //     reader.onload = function(e) {
+                                                        //         const uploadedImage = e.target.result;
+                                                        //         uploadedAvatar.src = uploadedImage;
+
+                                                        //         const formData = new FormData();
+                                                        //         formData.append('id_karyawan', userId);
+                                                        //         formData.append('foto_karyawan', file);
+
+                                                        //         const xhr = new XMLHttpRequest();
+                                                        //         xhr.open('POST', '{{ route('userPanels.avatar.edit') }}');
+                                                        //         xhr.setRequestHeader('X-CSRF-Token', '{{ csrf_token() }}');
+                                                        //         xhr.onload = function() {
+                                                        //             const response = JSON.parse(xhr.responseText);
+                                                        //             if (response.reload) {
+                                                        //                 window.location.reload();
+                                                        //             }
+                                                        //         };
+                                                        //         xhr.send(formData);
+                                                        //     };
+
+                                                        //     reader.readAsDataURL(file);
+                                                        // });
+
+
                                                         uploadInput.addEventListener('change', function() {
                                                             const file = uploadInput.files[0];
                                                             const reader = new FileReader();
@@ -366,16 +394,22 @@
                                                                 formData.append('id_karyawan', userId);
                                                                 formData.append('foto_karyawan', file);
 
-                                                                const xhr = new XMLHttpRequest();
-                                                                xhr.open('POST', '{{ route('userPanels.avatar.edit') }}');
-                                                                xhr.setRequestHeader('X-CSRF-Token', '{{ csrf_token() }}');
-                                                                xhr.onload = function() {
-                                                                    const response = JSON.parse(xhr.responseText);
-                                                                    if (response.reload) {
-                                                                        window.location.reload();
-                                                                    }
-                                                                };
-                                                                xhr.send(formData);
+                                                                // Use makeRequest to send the FormData
+                                                                makeRequest('{{ route('userPanels.avatar.edit') }}', {
+                                                                        method: 'POST',
+                                                                        body: formData, // Send FormData directly
+                                                                        headers: {
+                                                                            'X-CSRF-Token': '{{ csrf_token() }}' // Include CSRF token in headers
+                                                                        }
+                                                                    })
+                                                                    .then(response => {
+                                                                        if (response.reload) {
+                                                                            window.location.reload();
+                                                                        }
+                                                                    })
+                                                                    .catch(error => {
+                                                                        console.error('Error uploading avatar:', error);
+                                                                    });
                                                             };
 
                                                             reader.readAsDataURL(file);
@@ -520,27 +554,37 @@
                                                         <!-- HTML -->
                                                         <div class="col-12 col-sm-6">
                                                             <div class="form-group">
-                                                                <input type="hidden" class="form-control" id="id" name="user_id" placeholder="ID"
+                                                                <input type="hidden" class="form-control" id="id"
+                                                                    name="user_id" placeholder="ID"
                                                                     value="{{ $authenticated_user_data->daftar_login_4get ? $authenticated_user_data->daftar_login_4get->user_id : ($authenticated_user_data->daftar_login ? $authenticated_user_data->daftar_login->user_id : '') }}" />
-                                                                <input type="hidden" class="form-control" id="type" name="type" placeholder="TYPE"
+                                                                <input type="hidden" class="form-control" id="type"
+                                                                    name="type" placeholder="TYPE"
                                                                     value="{{ $convertedUserType }}" />
                                                                 <label for="account-username">Username</label>
-                                                                <input type="text" class="form-control" id="account-username" name="username" placeholder="Username"
+                                                                <input type="text" class="form-control"
+                                                                    id="account-username" name="username"
+                                                                    placeholder="Username"
                                                                     value="{{ $authenticated_user_data->daftar_login_4get ? $authenticated_user_data->daftar_login_4get->username : ($authenticated_user_data->daftar_login ? $authenticated_user_data->daftar_login->username : '') }}" />
                                                             </div>
                                                         </div>
                                                         <div class="col-12 col-sm-6">
                                                             <div class="form-group">
                                                                 <label for="account-e-mail">E-mail</label>
-                                                                <input type="email" class="form-control" id="account-e-mail" name="email" placeholder="Email"
+                                                                <input type="email" class="form-control"
+                                                                    id="account-e-mail" name="email"
+                                                                    placeholder="Email"
                                                                     value="{{ $authenticated_user_data->daftar_login_4get ? $authenticated_user_data->daftar_login_4get->email : ($authenticated_user_data->daftar_login ? $authenticated_user_data->daftar_login->email : '') }}" />
                                                             </div>
                                                         </div>
                                                         <div class="col-12 col-sm-6">
                                                             <div class="form-group">
-                                                                <label for="account-retype-new-password">New Password</label>
-                                                                <div class="input-group form-password-toggle input-group-merge">
-                                                                    <input type="password" class="form-control" id="account-retype-new-password" name="new-password" placeholder="New Password" />
+                                                                <label for="account-retype-new-password">New
+                                                                    Password</label>
+                                                                <div
+                                                                    class="input-group form-password-toggle input-group-merge">
+                                                                    <input type="password" class="form-control"
+                                                                        id="account-retype-new-password"
+                                                                        name="new-password" placeholder="New Password" />
                                                                     <div class="input-group-append">
                                                                         <div class="input-group-text cursor-pointer">
                                                                             <i data-feather="eye"></i>
@@ -551,9 +595,14 @@
                                                         </div>
                                                         <div class="col-12 col-sm-6">
                                                             <div class="form-group">
-                                                                <label for="account-retype-new-password">Retype New Password</label>
-                                                                <div class="input-group form-password-toggle input-group-merge">
-                                                                    <input type="password" class="form-control" id="account-retype-new-password" name="confirm-new-password" placeholder="Retype Password" />
+                                                                <label for="account-retype-new-password">Retype New
+                                                                    Password</label>
+                                                                <div
+                                                                    class="input-group form-password-toggle input-group-merge">
+                                                                    <input type="password" class="form-control"
+                                                                        id="account-retype-new-password"
+                                                                        name="confirm-new-password"
+                                                                        placeholder="Retype Password" />
                                                                     <div class="input-group-append">
                                                                         <div class="input-group-text cursor-pointer">
                                                                             <i data-feather="eye"></i>
@@ -563,8 +612,10 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-12">
-                                                            <button type="submit" class="btn btn-primary mr-1 mt-1">Save changes</button>
-                                                            <button type="reset" class="btn btn-outline-secondary mt-1">Cancel</button>
+                                                            <button type="submit" class="btn btn-primary mr-1 mt-1">Save
+                                                                changes</button>
+                                                            <button type="reset"
+                                                                class="btn btn-outline-secondary mt-1">Cancel</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -691,6 +742,34 @@
                                                         const uploadedAvatar = document.getElementById('account-upload-img');
                                                         const userId = '{{ $authenticated_user_data->id_karyawan }}';
 
+                                                        // uploadInput.addEventListener('change', function() {
+                                                        //     const file = uploadInput.files[0];
+                                                        //     const reader = new FileReader();
+
+                                                        //     reader.onload = function(e) {
+                                                        //         const uploadedImage = e.target.result;
+                                                        //         uploadedAvatar.src = uploadedImage;
+
+                                                        //         const formData = new FormData();
+                                                        //         formData.append('id_karyawan', userId);
+                                                        //         formData.append('foto_karyawan', file);
+
+                                                        //         const xhr = new XMLHttpRequest();
+                                                        //         xhr.open('POST', '{{ route('userPanels.avatar.edit') }}');
+                                                        //         xhr.setRequestHeader('X-CSRF-Token', '{{ csrf_token() }}');
+                                                        //         xhr.onload = function() {
+                                                        //             const response = JSON.parse(xhr.responseText);
+                                                        //             if (response.reload) {
+                                                        //                 window.location.reload();
+                                                        //             }
+                                                        //         };
+                                                        //         xhr.send(formData);
+                                                        //     };
+
+                                                        //     reader.readAsDataURL(file);
+                                                        // });
+
+
                                                         uploadInput.addEventListener('change', function() {
                                                             const file = uploadInput.files[0];
                                                             const reader = new FileReader();
@@ -703,16 +782,19 @@
                                                                 formData.append('id_karyawan', userId);
                                                                 formData.append('foto_karyawan', file);
 
-                                                                const xhr = new XMLHttpRequest();
-                                                                xhr.open('POST', '{{ route('userPanels.avatar.edit') }}');
-                                                                xhr.setRequestHeader('X-CSRF-Token', '{{ csrf_token() }}');
-                                                                xhr.onload = function() {
-                                                                    const response = JSON.parse(xhr.responseText);
-                                                                    if (response.reload) {
-                                                                        window.location.reload();
-                                                                    }
-                                                                };
-                                                                xhr.send(formData);
+                                                                // Use makeRequest to send the FormData
+                                                                makeRequest('{{ route('userPanels.avatar.edit') }}', {
+                                                                        method: 'POST',
+                                                                        body: formData // Send FormData directly
+                                                                    })
+                                                                    .then(response => {
+                                                                        if (response.reload) {
+                                                                            window.location.reload();
+                                                                        }
+                                                                    })
+                                                                    .catch(error => {
+                                                                        console.error('Error uploading avatar:', error);
+                                                                    });
                                                             };
 
                                                             reader.readAsDataURL(file);
@@ -965,7 +1047,7 @@
                     lengthMenu: 'Display _MENU_ records per page',
                     info: 'Showing page _PAGE_ of _PAGES_',
                     search: 'Search',
-                                        // paginate: {
+                    // paginate: {
                     //     first: 'First',
                     //     last: 'Last',
                     //     next: '&rarr;',

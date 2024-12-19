@@ -214,7 +214,7 @@
                     lengthMenu: 'Display _MENU_ records per page',
                     info: 'Showing page _PAGE_ of _PAGES_',
                     search: 'Search',
-                                        // paginate: {
+                    // paginate: {
                     //     first: 'First',
                     //     last: 'Last',
                     //     next: '&rarr;',
@@ -320,33 +320,61 @@
                 var karyawanID = $(this).attr('karyawan_id_value');
                 // console.log('Edit button clicked for jabatan_id:', jabID);
 
+                // setTimeout(() => {
+                //     $.ajax({
+                //         url: '{{ route('m.emp.roles.getrole') }}',
+                //         method: 'POST',
+                //         headers: {
+                //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                //         },
+                //         data: {
+                //             jabatanID: jabID,
+                //             karyawanID: karyawanID
+                //         },
+                //         success: function(response) {
+                //             console.log(response);
+                //             $('#jabatan_id').val(response.id_jabatan);
+                //             $('#karyawan_id').val(response.id_karyawan);
+                //             $('#role_name').val(response.na_jabatan);
+                //             setEmpList(response);
+
+                //             // console.log('SHOWING MODAL');
+                //             document.body.style.overflowY = 'hidden';
+                //             modalToShow.show();
+                //         },
+                //         error: function(error) {
+                //             console.log("Err [JS]:\n");
+                //             console.log(error);
+                //         }
+                //     });
+                // }); // <-- Closing parenthesis for setTimeout
+
                 setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.emp.roles.getrole') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            jabatanID: jabID,
-                            karyawanID: karyawanID
-                        },
-                        success: function(response) {
+                    makeRequest('{{ route('m.emp.roles.getrole') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                jabatanID: jabID,
+                                karyawanID: karyawanID
+                            })
+                        })
+                        .then(response => {
                             console.log(response);
                             $('#jabatan_id').val(response.id_jabatan);
                             $('#karyawan_id').val(response.id_karyawan);
                             $('#role_name').val(response.na_jabatan);
                             setEmpList(response);
 
-                            // console.log('SHOWING MODAL');
-document.body.style.overflowY = 'hidden';
+                            // Show the modal
+                            document.body.style.overflowY = 'hidden';
                             modalToShow.show();
-                        },
-                        error: function(error) {
+                        })
+                        .catch(error => {
                             console.log("Err [JS]:\n");
                             console.log(error);
-                        }
-                    });
+                        });
                 }); // <-- Closing parenthesis for setTimeout
             });
 
@@ -421,7 +449,7 @@ document.body.style.overflowY = 'hidden';
                 $('.delete-record').on('click', function() {
                     var absenID = $(this).attr('jabatan_id_value');
                     $('#' + whichModal + ' #jabatan_id').val(absenID);
-                     document.body.style.overflowY = 'hidden';
+                    document.body.style.overflowY = 'hidden';
                     modalToShow.show();
                 });
             }, 200);

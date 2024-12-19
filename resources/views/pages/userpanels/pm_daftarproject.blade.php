@@ -321,12 +321,17 @@
                                                                 ) {
                                                                     $meRef = '';
                                                                 }
-                                                                if ($authUserType === 'Superuser' || $authUserType === 'Supervisor') {
-                                                                    $border1Ref = 'border-right: 2px solid #7367f0 !important';
+                                                                if (
+                                                                    $authUserType === 'Superuser' ||
+                                                                    $authUserType === 'Supervisor'
+                                                                ) {
+                                                                    $border1Ref =
+                                                                        'border-right: 2px solid #7367f0 !important';
                                                                 }
                                                             @endphp
 
-                                                            <div class="{{ $meRef }} w-100" style="{{ $border1Ref }}">
+                                                            <div class="{{ $meRef }} w-100"
+                                                                style="{{ $border1Ref }}">
                                                                 {{-- @if ($isCoInPrj || $isEmployeeInTeam) --}}
                                                                 @if (count($project->coordinators) > 0 && count($project->prjteams) > 0)
                                                                     <a class="open-project-mw dropdown-item d-flex align-items-center"
@@ -438,19 +443,19 @@
                                                         -
                                                     @endif
                                                 @else
-                                                @if ($project->id_project)
-                                                <div data-toggle="tooltip" data-popup="tooltip-custom"
-                                                    data-placement="bottom"
-                                                    data-original-title="{{ !count($project->coordinators) > 0 && !count($project->prjteams) > 0 ? 'Pending...' : (!count($project->coordinators) > 0 ? 'Pending...' : (!count($project->prjteams) > 0 ? 'Pending...' : 'Click to navigate!')) }}"
-                                                    class="pull-up">
-                                                    <a class="open-project-mw {{ $isCondFullfilled ? 'text-white' : '' }}"
-                                                        project_id_value="{{ $project->id_project }}">
-                                                        {{ $project->id_project ?: '-' }}
-                                                    </a>
-                                                </div>
-                                            @else
-                                                -
-                                            @endif
+                                                    @if ($project->id_project)
+                                                        <div data-toggle="tooltip" data-popup="tooltip-custom"
+                                                            data-placement="bottom"
+                                                            data-original-title="{{ !count($project->coordinators) > 0 && !count($project->prjteams) > 0 ? 'Pending...' : (!count($project->coordinators) > 0 ? 'Pending...' : (!count($project->prjteams) > 0 ? 'Pending...' : 'Click to navigate!')) }}"
+                                                            class="pull-up">
+                                                            <a class="open-project-mw {{ $isCondFullfilled ? 'text-white' : '' }}"
+                                                                project_id_value="{{ $project->id_project }}">
+                                                                {{ $project->id_project ?: '-' }}
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        -
+                                                    @endif
                                                 @endif
                                             @endif
                                             {{--
@@ -804,387 +809,452 @@
     </script>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modalId = 'edit_projectModal';
-            const modalSelector = document.getElementById(modalId);
-            const modalToShow = new bootstrap.Modal(modalSelector);
-            const targetedModalForm = document.querySelector('#' + modalId + ' #edit_projectModalFORM');
+    @if ($authUserType != 'Client')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const modalId = 'edit_projectModal';
+                const modalSelector = document.getElementById(modalId);
+                const modalToShow = new bootstrap.Modal(modalSelector);
+                const targetedModalForm = document.querySelector('#' + modalId + ' #edit_projectModalFORM');
 
-            $(document).on('click', '.edit-record', function(event) {
-                var prjID = $(this).attr('project_id_value');
-                var prjName = $(this).attr('project_id_value');
-                var clientID = $(this).attr('client_id_value');
-                var prjCO = $(this).attr('karyawan_id_value');
+                $(document).on('click', '.edit-record', function(event) {
+                    var prjID = $(this).attr('project_id_value');
+                    var prjName = $(this).attr('project_id_value');
+                    var clientID = $(this).attr('client_id_value');
+                    var prjCO = $(this).attr('karyawan_id_value');
 
-                setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.projects.getprj') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            prjID: prjID,
-                            prjName: prjName,
-                            clientID: clientID,
-                            prjCO: prjCO
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            $('#e-client-id').val(response.id_client);
-                            $('#e-project-id').val(response.id_project);
-                            $('#edit-project-id').val(response.id_project);
-                            $('#edit-project-name').val(response.na_project);
-                            // setCoId(response);
-                            setClientList(response);
-                            setTeamList(response);
-                            setCoordinatorList(
-                                response); // New function to set coordinators
-                            // setEngineerTeamList(response); // New function to set engineer teams
-                            setStartDeadline(response);
+                    // setTimeout(() => {
+                    //     $.ajax({
+                    //         url: '{{ route('m.projects.getprj') }}',
+                    //         method: 'POST',
+                    //         headers: {
+                    //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                    //         },
+                    //         data: {
+                    //             prjID: prjID,
+                    //             prjName: prjName,
+                    //             clientID: clientID,
+                    //             prjCO: prjCO
+                    //         },
+                    //         success: function(response) {
+                    //             console.log(response);
+                    //             $('#e-client-id').val(response.id_client);
+                    //             $('#e-project-id').val(response.id_project);
+                    //             $('#edit-project-id').val(response.id_project);
+                    //             $('#edit-project-name').val(response.na_project);
+                    //             // setCoId(response);
+                    //             setClientList(response);
+                    //             setTeamList(response);
+                    //             setCoordinatorList(
+                    //                 response); // New function to set coordinators
+                    //             // setEngineerTeamList(response); // New function to set engineer teams
+                    //             setStartDeadline(response);
 
 
-                            document.body.style.overflowY = 'hidden';
-                            modalToShow.show();
-                        },
-                        error: function(error) {
-                            console.log("Err [JS]:\n");
-                            console.log(error);
+                    //             document.body.style.overflowY = 'hidden';
+                    //             modalToShow.show();
+                    //         },
+                    //         error: function(error) {
+                    //             console.log("Err [JS]:\n");
+                    //             console.log(error);
+                    //         }
+                    //     });
+                    // }); // <-- Closing parenthesis for setTimeout
+
+                    setTimeout(() => {
+                        makeRequest('{{ route('m.projects.getprj') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    prjID: prjID,
+                                    prjName: prjName,
+                                    clientID: clientID,
+                                    prjCO: prjCO
+                                })
+                            })
+                            .then(response => {
+                                console.log(response);
+                                $('#e-client-id').val(response.id_client);
+                                $('#e-project-id').val(response.id_project);
+                                $('#edit-project-id').val(response.id_project);
+                                $('#edit-project-name').val(response.na_project);
+                                // setCoId(response);
+                                setClientList(response);
+                                setTeamList(response);
+                                setCoordinatorList(response); // New function to set coordinators
+                                // setEngineerTeamList(response); // New function to set engineer teams
+                                setStartDeadline(response);
+
+                                document.body.style.overflowY = 'hidden';
+                                modalToShow.show();
+                            })
+                            .catch(error => {
+                                console.log("Err [JS]:\n");
+                                console.log(error);
+                            });
+                    }); // <-- Closing parenthesis for setTimeout
+                });
+
+                function setTeamList(response) {
+                    var teamSelect = $('#' + modalId + ' #edit-engteam-select2-assign');
+                    teamSelect.empty(); // Clear existing options
+                    teamSelect.append($('<option>', {
+                        value: "",
+                        text: "Select Team"
+                    }));
+                    $.each(response.teamList, function(index, teamOption) {
+                        var option = $('<option>', {
+                            value: teamOption.value,
+                            text: `${teamOption.text}`
+                        });
+                        if (teamOption.selected) {
+                            option.attr('selected',
+                                'selected'); // Select the option if it is marked as selected
                         }
+                        teamSelect.append(option);
                     });
-                }); // <-- Closing parenthesis for setTimeout
+                    initializeSelect2(teamSelect, "Select Team");
+                }
+
+                function setCoordinatorList(response) {
+                    var coSelect = $('#' + modalId + ' #edit-co-select2-assign');
+                    coSelect.empty(); // Clear existing options
+                    coSelect.append($('<option>', {
+                        value: "",
+                        text: "Select Co"
+                    }));
+                    $.each(response.coList, function(index, coOption) {
+                        var option = $('<option>', {
+                            value: coOption.value,
+                            text: `${coOption.text}`
+                        });
+                        if (coOption.selected) {
+                            option.attr('selected',
+                                'selected'); // Select the option if it is marked as selected
+                        }
+                        coSelect.append(option);
+                    });
+                    initializeSelect2(coSelect, "Assign Co");
+                }
+
+                function setClientList(response) {
+                    var clientSelect = $('#' + modalId + ' #edit-client-id');
+                    clientSelect.empty(); // Clear existing options
+                    clientSelect.append($('<option>', {
+                        value: "",
+                        text: "Select Customer"
+                    }));
+                    $.each(response.clientList, function(index, clientOption) {
+                        var option = $('<option>', {
+                            value: clientOption.value,
+                            text: `${clientOption.text}`
+                        });
+                        if (clientOption.selected) {
+                            option.attr('selected', 'selected'); // Select the option
+                        }
+                        clientSelect.append(option);
+                    });
+                }
+
+
+                function initializeSelect2(selectElement, placeholder) {
+                    selectElement.select2({
+                        placeholder: placeholder,
+                        allowClear: false,
+                        closeOnSelect: true
+                    }).on("select2:unselect", function(e) {
+                        // Handle unselect event
+                        console.log("Unselected:", e.params.data);
+                        // Optionally, you can perform additional actions here
+                    }).on("select2:select", function(e) {
+                        // Handle select event
+                        console.log("Selected:", e.params.data);
+                    });
+                    // .on("select2:open", function() {
+                    //     // Handle open event
+                    //     console.log("Select2 opened");
+                    // }).on("select2:close", function() {
+                    //     // Handle close event
+                    //     console.log("Select2 closed");
+                    // });
+                }
+
+                function setStartDeadline(response) {
+                    var startDeadlineDate = $('#' + modalId + ' #edit-start-deadline');
+                    startDeadlineDate.val(response.start_deadline);
+                }
+
+
+                const saveRecordBtn = document.querySelector('#' + modalId + ' #confirmSave');
+                if (saveRecordBtn) {
+                    saveRecordBtn.addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent the default button behavior
+                        targetedModalForm.submit(); // Submit the form if validation passes
+                    });
+                }
             });
-
-            function setTeamList(response) {
-                var teamSelect = $('#' + modalId + ' #edit-engteam-select2-assign');
-                teamSelect.empty(); // Clear existing options
-                teamSelect.append($('<option>', {
-                    value: "",
-                    text: "Select Team"
-                }));
-                $.each(response.teamList, function(index, teamOption) {
-                    var option = $('<option>', {
-                        value: teamOption.value,
-                        text: `${teamOption.text}`
-                    });
-                    if (teamOption.selected) {
-                        option.attr('selected',
-                            'selected'); // Select the option if it is marked as selected
-                    }
-                    teamSelect.append(option);
-                });
-                initializeSelect2(teamSelect, "Select Team");
-            }
-
-            function setCoordinatorList(response) {
-                var coSelect = $('#' + modalId + ' #edit-co-select2-assign');
-                coSelect.empty(); // Clear existing options
-                coSelect.append($('<option>', {
-                    value: "",
-                    text: "Select Co"
-                }));
-                $.each(response.coList, function(index, coOption) {
-                    var option = $('<option>', {
-                        value: coOption.value,
-                        text: `${coOption.text}`
-                    });
-                    if (coOption.selected) {
-                        option.attr('selected',
-                            'selected'); // Select the option if it is marked as selected
-                    }
-                    coSelect.append(option);
-                });
-                initializeSelect2(coSelect, "Assign Co");
-            }
-
-            function setClientList(response) {
-                var clientSelect = $('#' + modalId + ' #edit-client-id');
-                clientSelect.empty(); // Clear existing options
-                clientSelect.append($('<option>', {
-                    value: "",
-                    text: "Select Customer"
-                }));
-                $.each(response.clientList, function(index, clientOption) {
-                    var option = $('<option>', {
-                        value: clientOption.value,
-                        text: `${clientOption.text}`
-                    });
-                    if (clientOption.selected) {
-                        option.attr('selected', 'selected'); // Select the option
-                    }
-                    clientSelect.append(option);
-                });
-            }
-
-
-            function initializeSelect2(selectElement, placeholder) {
-                selectElement.select2({
-                    placeholder: placeholder,
-                    allowClear: false,
-                    closeOnSelect: true
-                }).on("select2:unselect", function(e) {
-                    // Handle unselect event
-                    console.log("Unselected:", e.params.data);
-                    // Optionally, you can perform additional actions here
-                }).on("select2:select", function(e) {
-                    // Handle select event
-                    console.log("Selected:", e.params.data);
-                });
-                // .on("select2:open", function() {
-                //     // Handle open event
-                //     console.log("Select2 opened");
-                // }).on("select2:close", function() {
-                //     // Handle close event
-                //     console.log("Select2 closed");
-                // });
-            }
-
-            function setStartDeadline(response) {
-                var startDeadlineDate = $('#' + modalId + ' #edit-start-deadline');
-                startDeadlineDate.val(response.start_deadline);
-            }
-
-
-            const saveRecordBtn = document.querySelector('#' + modalId + ' #confirmSave');
-            if (saveRecordBtn) {
-                saveRecordBtn.addEventListener('click', function(event) {
-                    event.preventDefault(); // Prevent the default button behavior
-                    targetedModalForm.submit(); // Submit the form if validation passes
-                });
-            }
-        });
-    </script>
+        </script>
 
 
 
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            whichModal = "delete_projectModal";
-            const modalSelector = document.querySelector('#' + whichModal);
-            const modalToShow = new bootstrap.Modal(modalSelector);
+        {{-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        whichModal = "delete_projectModal";
+        const modalSelector = document.querySelector('#' + whichModal);
+        const modalToShow = new bootstrap.Modal(modalSelector);
 
-            setTimeout(() => {
-                $('.delete-record').on('click', function() {
-                    var projectID = $(this).attr('project_id_value');
-                    $('#' + whichModal + ' #project_id').val(projectID);
-                     document.body.style.overflowY = 'hidden';
+        setTimeout(() => {
+            $('.delete-record').on('click', function() {
+                var projectID = $(this).attr('project_id_value');
+                $('#' + whichModal + ' #project_id').val(projectID);
+                 document.body.style.overflowY = 'hidden';
 modalToShow.show();
+            });
+        }, 200);
+
+    });
+</script> --}}
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                whichDelModal = "delete_projectModal";
+                const modalDelSelector3 = document.querySelector('#' + whichDelModal);
+
+                if (modalDelSelector3) {
+                    const modalToShow3 = new bootstrap.Modal(modalDelSelector3);
+
+                    setTimeout(() => {
+                        $('table .dropdown-menu').on('click', '.delete-record', function(event) {
+                            console.log("CLICKED");
+                            // var projectID = $(this).attr('project_id_value');
+                            var projectID = $(this).closest('tr').attr('project_id_value');
+                            // var projectID = $(this).closest('tr').find('.project-id').val();
+
+
+                            $('#' + whichDelModal + ' #del-project_id').val(projectID);
+                            modalToShow3.show();
+                        });
+                    }, 800);
+
+                }
+            });
+        </script>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                $('input[name^="show_to_client_"]').change(function() {
+                    const projectID = $(this).attr('name').split('_')[3]; // Extracting the project ID
+                    const showToClientValue = $(this).val(); // Get the value of the selected radio button
+
+                    // $.ajax({
+                    //     url: '{{ route('m.projects.modprj.sh2cl') }}',
+                    //     method: 'POST',
+                    //     data: {
+                    //         projectID: projectID,
+                    //         show_to_client: showToClientValue,
+                    //         _token: '{{ csrf_token() }}'
+                    //     },
+                    //     success: function(response) {
+                    //         if (response != null && response.message) {
+                    //             jsonToastReceiver(response
+                    //                 .message); // Pass response.message instead of response
+                    //         }
+                    //         // Handle success response
+                    //         console.log('Update successful:', response);
+                    //     },
+                    //     error: function(xhr, status, error) {
+                    //         if (xhr.responseJSON != null && xhr.responseJSON.message) {
+                    //             jsonToastReceiver(xhr.responseJSON
+                    //                 .message); // Pass response.message instead of response
+                    //         }
+                    //         // Handle error response
+                    //         console.error('Update failed:', error);
+                    //     }
+                    // });
+
+                    makeRequest('{{ route('m.projects.modprj.sh2cl') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                projectID: projectID,
+                                show_to_client: showToClientValue,
+                                _token: '{{ csrf_token() }}' // This can be omitted if CSRF token is managed globally
+                            })
+                        })
+                        .then(response => {
+                            if (response != null && response.message) {
+                                jsonToastReceiver(response
+                                    .message); // Pass response.message instead of response
+                            }
+                            // Handle success response
+                            console.log('Update successful:', response);
+                        })
+                        .catch(error => {
+                            if (error.responseJSON != null && error.responseJSON.message) {
+                                jsonToastReceiver(error.responseJSON
+                                    .message); // Pass response.message instead of response
+                            }
+                            // Handle error response
+                            console.error('Update failed:', error);
+                        });
                 });
-            }, 200);
+            });
+        </script>
 
+        {{-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#engteam-select2-assign').select2({
+            placeholder: "Assign Team",
+            allowClear: false,
+            closeOnSelect: true
         });
-    </script> --}}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            whichDelModal = "delete_projectModal";
-            const modalDelSelector3 = document.querySelector('#' + whichDelModal);
-
-            if (modalDelSelector3) {
-                const modalToShow3 = new bootstrap.Modal(modalDelSelector3);
-
-                setTimeout(() => {
-                    $('table .dropdown-menu').on('click', '.delete-record', function(event) {
-                        console.log("CLICKED");
-                        // var projectID = $(this).attr('project_id_value');
-                        var projectID = $(this).closest('tr').attr('project_id_value');
-                        // var projectID = $(this).closest('tr').find('.project-id').val();
-
-
-                        $('#' + whichDelModal + ' #del-project_id').val(projectID);
-                        modalToShow3.show();
-                    });
-                }, 800);
-
-            }
+        $('#co-select2-assign').select2({
+            placeholder: "Assign Co",
+            allowClear: false,
+            closeOnSelect: true
         });
-    </script>
+    });
+</script> --}}
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            $('input[name^="show_to_client_"]').change(function() {
-                const projectID = $(this).attr('name').split('_')[3]; // Extracting the project ID
-                const showToClientValue = $(this).val(); // Get the value of the selected radio button
 
-                $.ajax({
-                    url: '{{ route('m.projects.modprj.sh2cl') }}',
-                    method: 'POST',
-                    data: {
-                        projectID: projectID,
-                        show_to_client: showToClientValue,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        if (response != null && response.message) {
-                            jsonToastReceiver(response
-                                .message); // Pass response.message instead of response
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const modalId = 'add_projectModal';
+                const modalSelector = document.getElementById(modalId);
+                const modalToShow = new bootstrap.Modal(modalSelector);
+                const targetedModalForm = document.querySelector('#' + modalId + ' #add_projectModalFORM');
+
+                $(document).on('click', '.add-new-record', function(event) {
+                    setTimeout(() => {
+                        $.ajax({
+                            url: '{{ route('m.projects.getprj4add') }}',
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                            },
+                            data: {
+                                act: 'addData'
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                setClientList(response);
+                                setTeamList(response);
+                                setCoordinatorList(response);
+
+                                document.body.style.overflowY = 'hidden';
+                                modalToShow.show();
+                            },
+                            error: function(error) {
+                                console.log("Err [JS]:\n");
+                                console.log(error);
+                            }
+                        });
+                    }); // <-- Closing parenthesis for setTimeout
+                });
+
+
+                function setTeamList(response) {
+                    var teamSelect = $('#' + modalId + ' #engteam-select2-assign');
+                    teamSelect.empty(); // Clear existing options
+                    teamSelect.append($('<option>', {
+                        value: "",
+                        text: "Select Team"
+                    }));
+                    $.each(response.team_list, function(index, teamOption) {
+                        var option = $('<option>', {
+                            // value: teamOption.value,
+                            value: teamOption.value,
+                            text: teamOption.text
+                        });
+                        if (teamOption.selected) {
+                            option.attr('selected',
+                                'selected'); // Select the option if it is marked as selected
                         }
-                        // Handle success response
-                        console.log('Update successful:', response);
-                    },
-                    error: function(xhr, status, error) {
-                        if (xhr.responseJSON != null && xhr.responseJSON.message) {
-                            jsonToastReceiver(xhr.responseJSON
-                                .message); // Pass response.message instead of response
+                        teamSelect.append(option);
+                    });
+                    initializeSelect2_add(teamSelect, "Select Team");
+                }
+
+                function setCoordinatorList(response) {
+                    var coSelect = $('#' + modalId + ' #co-select2-assign');
+                    coSelect.empty(); // Clear existing options
+                    coSelect.append($('<option>', {
+                        value: "",
+                        text: "Select Co"
+                    }));
+                    $.each(response.co_list, function(index, coOption) {
+                        var option = $('<option>', {
+                            value: coOption.value,
+                            text: coOption.text
+                        });
+                        if (coOption.selected) {
+                            option.attr('selected',
+                                'selected'); // Select the option if it is marked as selected
                         }
-                        // Handle error response
-                        console.error('Update failed:', error);
-                    }
-                });
-            });
-        });
-    </script>
+                        coSelect.append(option);
+                    });
+                    initializeSelect2_add(coSelect, "Assign Co");
+                }
 
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            $('#engteam-select2-assign').select2({
-                placeholder: "Assign Team",
-                allowClear: false,
-                closeOnSelect: true
-            });
-            $('#co-select2-assign').select2({
-                placeholder: "Assign Co",
-                allowClear: false,
-                closeOnSelect: true
-            });
-        });
-    </script> --}}
-
-
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modalId = 'add_projectModal';
-            const modalSelector = document.getElementById(modalId);
-            const modalToShow = new bootstrap.Modal(modalSelector);
-            const targetedModalForm = document.querySelector('#' + modalId + ' #add_projectModalFORM');
-
-            $(document).on('click', '.add-new-record', function(event) {
-                setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.projects.getprj4add') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            act: 'addData'
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            setClientList(response);
-                            setTeamList(response);
-                            setCoordinatorList(response);
-
-                            document.body.style.overflowY = 'hidden';
-                            modalToShow.show();
-                        },
-                        error: function(error) {
-                            console.log("Err [JS]:\n");
-                            console.log(error);
+                function setClientList(response) {
+                    var clientSelect = $('#' + modalId + ' #client-id');
+                    clientSelect.empty(); // Clear existing options
+                    clientSelect.append($('<option>', {
+                        value: "",
+                        text: "Select Customer"
+                    }));
+                    $.each(response.client_list, function(index, clientOption) {
+                        var option = $('<option>', {
+                            value: clientOption.value,
+                            text: clientOption.text
+                        });
+                        if (clientOption.selected) {
+                            option.attr('selected',
+                                'selected'); // Select the option if it is marked as selected
                         }
+                        clientSelect.append(option);
                     });
-                }); // <-- Closing parenthesis for setTimeout
+                    initializeSelect2_add(clientSelect, "Select Customer");
+                }
+
+                function initializeSelect2_add(selectElement, placeholder) {
+                    selectElement.select2({
+                        placeholder: placeholder,
+                        allowClear: false,
+                        closeOnSelect: true
+                    }).on("select2:unselect", function(e) {
+                        // Handle unselect event
+                        console.log("Unselected:", e.params.data);
+                        // Optionally, you can perform additional actions here
+                    }).on("select2:select", function(e) {
+                        // Handle select event
+                        console.log("Selected:", e.params.data);
+                    });
+                    // .on("select2:open", function() {
+                    //     // Handle open event
+                    //     console.log("Select2 opened");
+                    // }).on("select2:close", function() {
+                    //     // Handle close event
+                    //     console.log("Select2 closed");
+                    // });
+                }
+
+
+                const saveRecordBtn = document.querySelector('#' + modalId + ' #confirmSave');
+                if (saveRecordBtn) {
+                    saveRecordBtn.addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent the default button behavior
+                        targetedModalForm.submit(); // Submit the form if validation passes
+                    });
+                }
             });
-
-
-            function setTeamList(response) {
-                var teamSelect = $('#' + modalId + ' #engteam-select2-assign');
-                teamSelect.empty(); // Clear existing options
-                teamSelect.append($('<option>', {
-                    value: "",
-                    text: "Select Team"
-                }));
-                $.each(response.team_list, function(index, teamOption) {
-                    var option = $('<option>', {
-                        // value: teamOption.value,
-                        value: teamOption.value,
-                        text: teamOption.text
-                    });
-                    if (teamOption.selected) {
-                        option.attr('selected',
-                            'selected'); // Select the option if it is marked as selected
-                    }
-                    teamSelect.append(option);
-                });
-                initializeSelect2_add(teamSelect, "Select Team");
-            }
-
-            function setCoordinatorList(response) {
-                var coSelect = $('#' + modalId + ' #co-select2-assign');
-                coSelect.empty(); // Clear existing options
-                coSelect.append($('<option>', {
-                    value: "",
-                    text: "Select Co"
-                }));
-                $.each(response.co_list, function(index, coOption) {
-                    var option = $('<option>', {
-                        value: coOption.value,
-                        text: coOption.text
-                    });
-                    if (coOption.selected) {
-                        option.attr('selected',
-                            'selected'); // Select the option if it is marked as selected
-                    }
-                    coSelect.append(option);
-                });
-                initializeSelect2_add(coSelect, "Assign Co");
-            }
-
-            function setClientList(response) {
-                var clientSelect = $('#' + modalId + ' #client-id');
-                clientSelect.empty(); // Clear existing options
-                clientSelect.append($('<option>', {
-                    value: "",
-                    text: "Select Customer"
-                }));
-                $.each(response.client_list, function(index, clientOption) {
-                    var option = $('<option>', {
-                        value: clientOption.value,
-                        text: clientOption.text
-                    });
-                    if (clientOption.selected) {
-                        option.attr('selected',
-                            'selected'); // Select the option if it is marked as selected
-                    }
-                    clientSelect.append(option);
-                });
-                initializeSelect2_add(clientSelect, "Select Customer");
-            }
-
-            function initializeSelect2_add(selectElement, placeholder) {
-                selectElement.select2({
-                    placeholder: placeholder,
-                    allowClear: false,
-                    closeOnSelect: true
-                }).on("select2:unselect", function(e) {
-                    // Handle unselect event
-                    console.log("Unselected:", e.params.data);
-                    // Optionally, you can perform additional actions here
-                }).on("select2:select", function(e) {
-                    // Handle select event
-                    console.log("Selected:", e.params.data);
-                });
-                // .on("select2:open", function() {
-                //     // Handle open event
-                //     console.log("Select2 opened");
-                // }).on("select2:close", function() {
-                //     // Handle close event
-                //     console.log("Select2 closed");
-                // });
-            }
-
-
-            const saveRecordBtn = document.querySelector('#' + modalId + ' #confirmSave');
-            if (saveRecordBtn) {
-                saveRecordBtn.addEventListener('click', function(event) {
-                    event.preventDefault(); // Prevent the default button behavior
-                    targetedModalForm.submit(); // Submit the form if validation passes
-                });
-            }
-        });
-    </script>
+        </script>
+    @endif
 @endsection

@@ -560,6 +560,11 @@ $activeSettings = $filtered_settings->filter(function ($setting) {
 
 
 
+    <!-- BEGIN: CSRF Auto Regen --> @include('v_res.csrf_regen.v_csrf_regen') <!-- END: CSRF Auto Regen -->
+
+
+
+
 </body>
 <!-- END: Body-->
 

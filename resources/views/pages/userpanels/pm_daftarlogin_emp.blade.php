@@ -226,7 +226,7 @@
                     lengthMenu: 'Display _MENU_ records per page',
                     info: 'Showing page _PAGE_ of _PAGES_',
                     search: 'Search',
-                                        // paginate: {
+                    // paginate: {
                     //     first: 'First',
                     //     last: 'Last',
                     //     next: '&rarr;',
@@ -337,150 +337,141 @@
                 var karyawanID = $(this).attr('karyawan_id_value');
                 // console.log('Edit button clicked for user_id:', userID);
 
+                // setTimeout(() => {
+                //     $.ajax({
+                //         url: '{{ route('m.user.emp.getuser') }}',
+                //         method: 'POST',
+                //         headers: {
+                //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                //         },
+                //         data: {
+                //             userID: userID,
+                //             karyawanID: karyawanID
+                //         },
+                //         success: function(response) {
+                //             console.log(response);
+                //             $('#user_id').val(response.user_id);
+                //             $('#modalEditEmployee').val(response.id_karyawan);
+                //             $('#modalEditUsername').val(response.username);
+                //             $('#modalEditEmail').val(response.email);
+                //             setEmpList();
+                //             setUserTypeList(response);
+
+                //             // console.log('SHOWING MODAL');
+                //             document.body.style.overflowY = 'hidden';
+                //             modalToShow.show();
+                //         },
+                //         error: function(error) {
+                //             console.log("Err [JS]:\n");
+                //             console.log(error);
+                //         }
+                //     });
+                // }); // <-- Closing parenthesis for setTimeout
+
                 setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.user.emp.getuser') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            userID: userID,
-                            karyawanID: karyawanID
-                        },
-                        success: function(response) {
+                    makeRequest('{{ route('m.user.emp.getuser') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                userID: userID,
+                                karyawanID: karyawanID
+                            })
+                        })
+                        .then(response => {
                             console.log(response);
                             $('#user_id').val(response.user_id);
                             $('#modalEditEmployee').val(response.id_karyawan);
                             $('#modalEditUsername').val(response.username);
                             $('#modalEditEmail').val(response.email);
-                            // $('#modalEditPassword').val(response.password);
-
-                            setEmpList();
-
-                            function setEmpList() {
-                                // Populate the select options for modalEditInstitutionMARKID1
-                                var empSelect = $('#' + modalId +
-                                    ' #modalEditEmployee');
-                                empSelect.empty(); // Clear existing options
-                                empSelect.append($('<option>', {
-                                    value: "",
-                                    text: "Select Employee"
-                                }));
-                                $.each(response.employeeList, function(index,
-                                    empOption) {
-                                    var option = $('<option>', {
-                                        value: empOption.value,
-                                        text: `${empOption.text}`
-                                    });
-                                    if (empOption.selected) {
-                                        option.attr('selected',
-                                            'selected'); // Select the option
-                                    }
-                                    empSelect.append(option);
-                                });
-
-                            }
-
-                            // console.log(response.userTypeList);
-
+                            setEmpList(response);
                             setUserTypeList(response);
 
-                            // function setUserTypeList() {
-                            //     // Populate the select options for modalEditInstitutionMARKID1
-                            //     var userTypeSelect = $('#' + modalId +
-                            //         ' #modalEditUserType');
-                            //     userTypeSelect.empty(); // Clear existing options
-                            //     userTypeSelect.append($('<option>', {
-                            //         value: "",
-                            //         text: "Select UserType"
-                            //     }));
-                            //     $.each(response.userTypeList, function(index,
-                            //         userTypeOption) {
-                            //         var option = $('<option>', {
-                            //             value: userTypeOption.value,
-                            //             text: `[${userTypeOption.value}] ${userTypeOption.text}`
-                            //         });
-                            //         if (userTypeOption.selected) {
-                            //             option.attr('selected',
-                            //                 'selected'); // Select the option
-                            //         }
-                            //         userTypeSelect.append(option);
-                            //     });
-
-                            // }
-
-
-
-
-
-
-                            function setUserTypeList(response) {
-                                console.log(response.userTypeList);
-                                var userTypeSelect = $('#' + modalId +
-                                    ' modalEditUserType');
-                                userTypeSelect.empty(); // Clear existing options
-                                var receivedUserType = response.userTypeList;
-
-                                var userTypeArr = [{
-                                        text: 'Select UserType',
-                                        value: '',
-                                        selected: receivedUserType === ''
-                                    },
-                                    {
-                                        text: 'Client',
-                                        value: 'Client',
-                                        selected: receivedUserType === 'Client'
-                                    },
-                                    {
-                                        text: 'Superuser',
-                                        value: 'Superuser',
-                                        selected: receivedUserType === 'Superuser'
-                                    },
-                                    {
-                                        text: 'Supervisor',
-                                        value: 'Supervisor',
-                                        selected: receivedUserType === 'Supervisor'
-                                    },
-                                    {
-                                        text: 'Engineer',
-                                        value: 'Engineer',
-                                        selected: receivedUserType === 'Engineer'
-                                    }
-                                ];
-
-                                $.each(userTypeArr, function(index, userTypeOption) {
-                                    var option = $('<option>');
-                                    option.attr('value', userTypeOption.value);
-                                    option.text(userTypeOption.text);
-
-                                    if (userTypeOption.selected) {
-                                        option.prop('selected', true);
-                                    }
-
-                                    userTypeSelect.append(option);
-                                });
-                            }
-
-
-
-
-
-
-
-
-
                             // console.log('SHOWING MODAL');
-document.body.style.overflowY = 'hidden';
+                            document.body.style.overflowY = 'hidden';
                             modalToShow.show();
-                        },
-                        error: function(error) {
+                        })
+                        .catch(error => {
                             console.log("Err [JS]:\n");
                             console.log(error);
-                        }
-                    });
+                        });
                 }); // <-- Closing parenthesis for setTimeout
             });
+
+
+            function setEmpList(response) {
+                // Populate the select options for modalEditInstitutionMARKID1
+                var empSelect = $('#' + modalId +
+                    ' #modalEditEmployee');
+                empSelect.empty(); // Clear existing options
+                empSelect.append($('<option>', {
+                    value: "",
+                    text: "Select Employee"
+                }));
+                $.each(response.employeeList, function(index,
+                    empOption) {
+                    var option = $('<option>', {
+                        value: empOption.value,
+                        text: `${empOption.text}`
+                    });
+                    if (empOption.selected) {
+                        option.attr('selected',
+                            'selected'); // Select the option
+                    }
+                    empSelect.append(option);
+                });
+
+            }
+
+
+            function setUserTypeList(response) {
+                console.log(response.userTypeList);
+                var userTypeSelect = $('#' + modalId +
+                    ' modalEditUserType');
+                userTypeSelect.empty(); // Clear existing options
+                var receivedUserType = response.userTypeList;
+
+                var userTypeArr = [{
+                        text: 'Select UserType',
+                        value: '',
+                        selected: receivedUserType === ''
+                    },
+                    {
+                        text: 'Client',
+                        value: 'Client',
+                        selected: receivedUserType === 'Client'
+                    },
+                    {
+                        text: 'Superuser',
+                        value: 'Superuser',
+                        selected: receivedUserType === 'Superuser'
+                    },
+                    {
+                        text: 'Supervisor',
+                        value: 'Supervisor',
+                        selected: receivedUserType === 'Supervisor'
+                    },
+                    {
+                        text: 'Engineer',
+                        value: 'Engineer',
+                        selected: receivedUserType === 'Engineer'
+                    }
+                ];
+
+                $.each(userTypeArr, function(index, userTypeOption) {
+                    var option = $('<option>');
+                    option.attr('value', userTypeOption.value);
+                    option.text(userTypeOption.text);
+
+                    if (userTypeOption.selected) {
+                        option.prop('selected', true);
+                    }
+
+                    userTypeSelect.append(option);
+                });
+            }
+
 
             const saveRecordBtn = document.querySelector('#' + modalId + ' #confirmSave');
             if (saveRecordBtn) {
@@ -528,7 +519,7 @@ document.body.style.overflowY = 'hidden';
                 $('table .dropdown-menu').on('click', '.delete-record', function(event) {
                     var userID = $(this).attr('user_id_value');
                     $('#' + whichModal + ' #user_id').val(userID);
-                     document.body.style.overflowY = 'hidden';
+                    document.body.style.overflowY = 'hidden';
                     modalToShow.show();
                 });
             }, 200);

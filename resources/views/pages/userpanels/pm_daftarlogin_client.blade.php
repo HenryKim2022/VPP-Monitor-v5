@@ -232,7 +232,7 @@
                     lengthMenu: 'Display _MENU_ records per page',
                     info: 'Showing page _PAGE_ of _PAGES_',
                     search: 'Search',
-                                        // paginate: {
+                    // paginate: {
                     //     first: 'First',
                     //     last: 'Last',
                     //     next: '&rarr;',
@@ -343,18 +343,52 @@
                 // var clientID = $(this).attr('client_id_value');
                 // console.log('Edit button clicked for user_id:', userID);
 
+                // setTimeout(() => {
+                //     $.ajax({
+                //         url: '{{ route('m.user.cli.getuser') }}',
+                //         method: 'POST',
+                //         headers: {
+                //             'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
+                //         },
+                //         data: {
+                //             userID: userID
+                //             // clientID: clientID
+                //         },
+                //         success: function(response) {
+                //             console.log(response);
+                //             $('#user_id').val(response.user_id);
+                //             $('#modalEditClient').val(response.id_client);
+                //             $('#modalEditUsername').val(response.username);
+                //             $('#modalEditEmail').val(response.email);
+                //             // $('#modalEditPassword').val(response.password);
+
+                //             setCliList(response.clientList);
+                //             setUserTypeList(response.userTypeList);
+
+                //             // console.log('SHOWING MODAL');
+                //             document.body.style.overflowY = 'hidden';
+                //             modalToShow.show();
+                //         },
+                //         error: function(error) {
+                //             console.log("Err [JS]:\n");
+                //             console.log(error);
+                //         }
+                //     });
+                // }); // <-- Closing parenthesis for setTimeout
+
+
                 setTimeout(() => {
-                    $.ajax({
-                        url: '{{ route('m.user.cli.getuser') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Update the CSRF token here
-                        },
-                        data: {
-                            userID: userID
-                            // clientID: clientID
-                        },
-                        success: function(response) {
+                    makeRequest('{{ route('m.user.cli.getuser') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                userID: userID
+                                // clientID: clientID // Uncomment if needed
+                            })
+                        })
+                        .then(response => {
                             console.log(response);
                             $('#user_id').val(response.user_id);
                             $('#modalEditClient').val(response.id_client);
@@ -366,15 +400,15 @@
                             setUserTypeList(response.userTypeList);
 
                             // console.log('SHOWING MODAL');
-document.body.style.overflowY = 'hidden';
+                            document.body.style.overflowY = 'hidden';
                             modalToShow.show();
-                        },
-                        error: function(error) {
+                        })
+                        .catch(error => {
                             console.log("Err [JS]:\n");
                             console.log(error);
-                        }
-                    });
+                        });
                 }); // <-- Closing parenthesis for setTimeout
+
             });
 
 
@@ -463,7 +497,7 @@ document.body.style.overflowY = 'hidden';
                 $('.dropdown-menu').on('click', '.delete-record', function(event) {
                     var userID = $(this).attr('user_id_value');
                     $('#' + whichModal + ' #del-user_id').val(userID);
-                     document.body.style.overflowY = 'hidden';
+                    document.body.style.overflowY = 'hidden';
                     modalToShow.show();
                 });
             }, 200);
