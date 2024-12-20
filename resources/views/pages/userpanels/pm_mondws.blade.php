@@ -813,8 +813,7 @@
                                                             @if ($authUserType === 'Superuser' || $isCoInPrj)
                                                                 <td
                                                                     class="{{ $isProjectOpen ? ($authUserType === 'Superuser' ? 'dragable-handle ' : ($isCoInPrj ? 'dragable-handle ' : '')) : '' }}cell-fit text-center align-middle">
-                                                                    <div
-                                                                        class="dropdown d-lg-block d-sm-block d-md-block">
+                                                                    <div class="dropdown d-lg-block d-sm-block d-md-block">
                                                                         <button
                                                                             class="dragable-handle btn btn-icon navbar-toggler p-0 d-inline-flex"
                                                                             type="button" id="tableActionDropdown"
@@ -2181,22 +2180,6 @@
                 /* Add styles for the draggable rows */
                 .selected4drag-start {
                     background-color: #ff9f43 !important;
-                    /* Light orange background when selected for drag */
-                    cursor: grabbing !important;
-                    /* Change cursor to grabbing */
-                }
-
-                .selected4drag-end {
-                    background-color: #28c76f !important;
-                    /* Light green background when released */
-                    cursor: default !important;
-                    /* Change cursor back to default */
-                }
-            </style>
-            <style>
-                /* Add styles for the draggable rows */
-                .selected4drag-start {
-                    background-color: #ff9f43 !important;
                     /* Light green background when selected for drag */
                     cursor: grabbing !important;
                     /* Change cursor to grabbing */
@@ -2208,6 +2191,20 @@
                     cursor: default !important;
                     /* Change cursor back to default */
                 }
+
+                .reorder-active {
+                    cursor: move;
+                    cursor: grab;
+                    cursor: -moz-grab;
+                    cursor: -webkit-grab;
+                }
+
+                .reorder-inactive {
+                    cursor: default !important;
+                    cursor: default !important;
+                    cursor: -moz-default !important;
+                    cursor: -webkit-default !important;
+                }
             </style>
 
             @if ($isProjectOpen)
@@ -2217,6 +2214,21 @@
                             window.isReorderActive = false;
                             let drake;
                             let selectedRow = null;
+
+
+                            const allDraggableRow = document.querySelectorAll('.draggable-row');
+                            if (window.isReorderActive) {
+                                allDraggableRow.forEach(row => {
+                                    row.classList.remove('reorder-inactive');
+                                    row.classList.add('reorder-active');
+                                });
+                            } else {
+                                allDraggableRow.forEach(row => {
+                                    row.classList.remove('reorder-active');
+                                    row.classList.add('reorder-inactive');
+                                });
+                            }
+
 
                             // Define the modReorder function in the global scope
                             window.modReorder = function() {
@@ -2236,6 +2248,20 @@
                                     button.classList.remove('btn-primary'); // Remove default class
                                     button.classList.add('btn-warning'); // Add active class
 
+                                    // allDraggableRow.forEach(row => {
+                                    //     row.classList.remove('reorder-inactive');
+                                    //     row.classList.add('reorder-active');
+                                    // });
+
+
+
+                                    // const allDraggableRow = document.querySelectorAll('#draggable-table tr .draggable-row');
+                                    allDraggableRow.forEach(row => {
+                                        row.classList.remove('reorder-inactive');
+                                        row.classList.add('reorder-active');
+                                    });
+
+
                                     // Initialize Dragula to enable dragging
                                     initializeDragula();
                                 } else {
@@ -2246,6 +2272,7 @@
                                     // Reset button class to default
                                     button.classList.remove('btn-warning'); // Remove active class
                                     button.classList.add('btn-primary'); // Add default class
+
 
                                     // Destroy Dragula instance to disable dragging
                                     if (drake) {
@@ -2258,8 +2285,17 @@
                                         allRows.forEach(row => {
                                             row.classList.remove('selected4drag-end'); // Remove the end class
                                             row.classList.remove(
-                                            'selected4drag-start'); // Remove the start class if needed
+                                                'selected4drag-start'); // Remove the start class if needed
                                         });
+
+
+                                        // const allDraggableRow = document.querySelectorAll('#draggable-table tr .draggable-row');
+                                        allDraggableRow.forEach(row => {
+                                            row.classList.remove('reorder-active');
+                                            row.classList.add('reorder-inactive');
+                                        });
+
+
                                     }
                                 }
                             };
@@ -2274,6 +2310,7 @@
                                 drake = dragula([document.getElementById('draggable-table')], {
                                     moves: function(el, container, handle) {
                                         // Allow dragging only if reorder is active
+                                        el.style.cursor = 'grabbing';
                                         return window.isReorderActive && handle.classList.contains('dragable-handle');
                                     }
                                 });
@@ -2301,6 +2338,7 @@
                                             selectedRow = null; // Reset selectedRow
                                         }
                                     }
+                                    el.style.cursor = 'grab';
                                 });
 
                                 drake.on('cancel', function(el) {
@@ -2308,6 +2346,7 @@
                                         selectedRow.classList.remove(
                                             'selected4drag-start'); // Remove the start class if drag is canceled
                                         selectedRow = null; // Reset selectedRow
+                                        el.style.cursor = 'grab';
                                     }
                                 });
 
@@ -2438,7 +2477,7 @@
                                     // Class management
                                     selectedRow.classList.remove('selected4drag-start'); // Remove the start class
                                     selectedRow.classList.add(
-                                    'selected4drag-end'); // Add a different class to indicate the end of selection
+                                        'selected4drag-end'); // Add a different class to indicate the end of selection
 
                                     // Reset classes after a timeout
                                     setTimeout(() => {
@@ -2446,7 +2485,7 @@
                                         allRows.forEach(row => {
                                             row.classList.remove('selected4drag-end'); // Remove the end class
                                             row.classList.remove(
-                                            'selected4drag-start'); // Remove the start class if needed
+                                                'selected4drag-start'); // Remove the start class if needed
                                         });
                                     }, 3000);
 

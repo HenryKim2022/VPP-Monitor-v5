@@ -4,8 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
     <meta name="description"
         content="Project Monitoris super flexible, powerful, clean &amp; modern responsive bootstrap 4 website with unlimited possibilities.">
-    <meta name="keywords"
-        content="Projects, Progress, Monitors">
+    <meta name="keywords" content="Projects, Progress, Monitors">
     <meta name="author" content="PT. VERTECH PERDANA">
     <title>{{ $page_title }}</title>
     <link rel="apple-touch-icon" href="{{ asset('public/assets/logo/favicon.ico') }}">
@@ -77,6 +76,7 @@
         href="{{ asset('public/theme/vuexy/app-assets/css/plugins/forms/pickers/form-pickadate.min.css') }}">
     <link rel="stylesheet" type="text/css"
         href="{{ asset('public/theme/vuexy/app-assets/css/plugins/extensions/ext-component-drag-drop.css') }}">
+
     <!-- END: Page CSS-->
 
 
@@ -208,16 +208,27 @@
         }
 
         .dark-layout #qr-popup .close-btn {
-            --fa-primary-color: #28c26e; --fa-secondary-color: #283046; --fa-secondary-opacity: 1;
+            --fa-primary-color: #28c26e;
+            --fa-secondary-color: #283046;
+            --fa-secondary-opacity: 1;
         }
+
         .dark-layout #qr-popup .close-btn:hover {
-            --fa-primary-color: #28c26e; --fa-secondary-color: #fff; --fa-secondary-opacity: 1;
+            --fa-primary-color: #28c26e;
+            --fa-secondary-color: #fff;
+            --fa-secondary-opacity: 1;
         }
+
         .light-layout #qr-popup .close-btn {
-            --fa-primary-color: #28c26e; --fa-secondary-color: #fff; --fa-secondary-opacity: 1;
+            --fa-primary-color: #28c26e;
+            --fa-secondary-color: #fff;
+            --fa-secondary-opacity: 1;
         }
+
         .light-layout #qr-popup .close-btn:hover {
-            --fa-primary-color: #28c26e; --fa-secondary-color: #283046; --fa-secondary-opacity: 1;
+            --fa-primary-color: #28c26e;
+            --fa-secondary-color: #283046;
+            --fa-secondary-opacity: 1;
         }
     </style>
     <!-- END: IMAGE ENLARGE QRPOPUP -->
@@ -500,10 +511,8 @@
 
 
     <!-- BEGIN: ADD LACKS PY -->
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('public/assets/css/dev.general.custom.css') }}">
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('public/assets/css/dev.very.custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/css/dev.general.custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/css/dev.very.custom.css') }}">
     <!-- END: ADD LACKS PY -->
 
 
@@ -738,8 +747,6 @@
     <!-- END: /CUSTOM DATATABLE BUTTON CSS -->
 
 
-
-
     <!--------------------------------------------------------------END: Custom CSS---------------------------------------------------------------->
     {{-- <!-- BEGIN: Fontawesome v5.7.0 CSS-->
     <link rel="stylesheet" type="text/css"
@@ -747,7 +754,7 @@
     <!-- END: Fontawesome v5.7.0 CSS--> --}}
     <!-- BEGIN: Fontawesome v5.15.4 CSS-->
     <link rel="stylesheet" type="text/css"
-    href="{{ asset('public/assets/fa.pro@5.15.4.web/css/all.css') }}?v={{ time() }}">
+        href="{{ asset('public/assets/fa.pro@5.15.4.web/css/all.css') }}?v={{ time() }}">
     <!-- END: Fontawesome v5.15.4 CSS-->
 
     @yield('header_page_cssjs')
