@@ -69,7 +69,7 @@
     }
 
     // Set an interval to refresh the CSRF token every 30 seconds (30000 milliseconds)
-    setInterval(refreshCsrfToken, secondsToMilliseconds(120));
+    setInterval(refreshCsrfToken, secondsToMilliseconds(600));
 
     // // Example usage of makeRequest
     // function exampleApiCall() {
