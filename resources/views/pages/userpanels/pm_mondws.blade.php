@@ -2253,6 +2253,13 @@
                                         drake.destroy(); // Destroy the current instance
                                         drake = null; // Reset the drake variable
                                         removeEventListeners(); // Remove event listeners
+
+                                        const allRows = document.querySelectorAll('#draggable-table tr');
+                                        allRows.forEach(row => {
+                                            row.classList.remove('selected4drag-end'); // Remove the end class
+                                            row.classList.remove(
+                                            'selected4drag-start'); // Remove the start class if needed
+                                        });
                                     }
                                 }
                             };
