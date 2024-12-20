@@ -71,7 +71,7 @@ class WorksheetController extends Controller
                 // ,
                 'task' => function ($query) use ($projectID) {
                     $query->where('id_project', $projectID)
-                    ->orderBy('start_time_task', 'asc');
+                        ->orderBy('start_time_task', 'asc');
                 }
                 // ,
                 // 'task.monitor' => function ($query) use ($projectID) {
@@ -150,10 +150,8 @@ class WorksheetController extends Controller
                                 ) { // Ensure task belongs to the current category
                                     $totalProgress += $task->progress_current_task; // Sum progress for saved tasks
                                 }
-
                             }
                         }
-
                     }
                 }
 
@@ -235,8 +233,14 @@ class WorksheetController extends Controller
                             // If expired, allow to insert duplicate data & set the old to locked
                             // how to do lock at the old data which expired here?
                             // If expired, lock the old data
+                            // Reset progress for related tasks
                             $worksheet->status_ws = 'LOCKED'; // Change the status to LOCKED
                             $worksheet->save(); // Save the changes to the database
+
+                            foreach ($worksheet->task as $task) {
+                                $task->progress_current_task = 0;
+                                $task->save();
+                            }
                             $hasOpenStatus = true;
                         }
                     } else {
